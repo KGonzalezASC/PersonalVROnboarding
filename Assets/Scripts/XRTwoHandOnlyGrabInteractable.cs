@@ -20,58 +20,70 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
         selectMode = InteractableSelectMode.Multiple;
     }
 
-    /// <summary>
-    /// Only run the normal grab-movement logic when exactly two hands are holding.
+/// <summary>
+    /// Only process the built-in XRGrabInteractable logic when there are zero hands.
+    /// Ignore one-hand touches entirely (force a release).
+    /// If there are exactly two hands, run our custom two-hand logic.
     /// </summary>
     public override void ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase phase)
     {
-        // Only do anything if two hands are selecting
-        if (interactorsSelecting.Count != 2)
+        int count = interactorsSelecting.Count;
+
+        // 1) Zero hands → fall back to normal (so that you can start grabbing with one hand)
+        //    That allows the object to enter the grabbed state if a hand touches it.
+        if (count == 0)
+        {
+            base.ProcessInteractable(phase);
             return;
+        }
 
-        float dist=0;
+        // 2) Exactly one hand → do NOTHING.  
+        //    By NOT calling base.ProcessInteractable, we force the object to drop (run its release cleanup)
+        //    as soon as that second hand disappears.  
+        if (count == 1)
+        {
+            return;
+        }
 
-        // Only handle movement on the Dynamic phase
+        // 3) Exactly two hands → override completely with our midpoint AND snapping logic.
+        //    We never call base.ProcessInteractable here, because we want to bypass
+        //    all built-in one-hand grab behavior and physics state changes.
+
         if (phase == XRInteractionUpdateOrder.UpdatePhase.Dynamic)
         {
-            var a = interactorsSelecting[0].transform.parent.position;
-            var b = interactorsSelecting[1].transform.parent.position;
+            // Compute midpoint between the two hand‐parent positions:
+            Vector3 a = interactorsSelecting[0].transform.parent.position;
+            Vector3 b = interactorsSelecting[1].transform.parent.position;
             transform.position = (a + b) * 0.5f;
-            dist = Vector3.Distance(a, b);
 
-            /*
-            Vector3 dir = b - a;
-            if (dir.sqrMagnitude > Mathf.Epsilon)
-                transform.rotation = Quaternion.LookRotation(dir, Vector3.up);*/
+            // (You can adjust rotation however you like; here we lock it to world‐forward ↑)
             transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
         }
-        //To disable snap grap base.ProcessInteractable(phase); need to be excluded in favor of a custom implementation always
-        //this means u can orient the object inital position as you see fit
-        //base.ProcessInteractable(phase);
-        
-        Vector3 worldPrimary   = attachTransform            != null ? attachTransform.position           : transform.position;
-        Vector3 worldSecondary = secondaryAttachTransform   != null ? secondaryAttachTransform.position   : transform.position;
-        // For each interactor, teleport its parent so the controller lines up exactly with the attach point
-        for (int i = 0; i < interactorsSelecting.Count; i++)
+
+        // Now manually snap each controller’s root to its chosen attach point:
+        Vector3 worldPrimary   = (attachTransform != null) 
+                                  ? attachTransform.position 
+                                  : transform.position;
+        Vector3 worldSecondary = (secondaryAttachTransform != null) 
+                                  ? secondaryAttachTransform.position 
+                                  : transform.position;
+
+        for (int i = 0; i < interactorsSelecting.Count; ++i)
         {
-            var inter = interactorsSelecting[i];
-            // Decide which attach point goes with which hand by handedness
-            var selectInter = inter as IXRSelectInteractor;
-            bool isRight = selectInter != null && selectInter.handedness == InteractorHandedness.Right;
+            // Cast to IXRSelectInteractor to read handedness
+            var inter = interactorsSelecting[i] as IXRSelectInteractor;
+            if (inter == null)
+                continue;
 
-            // Pick the world-space target
-            Vector3 target = isRight ? worldSecondary : worldPrimary;
+            bool isRight = (inter.handedness == InteractorHandedness.Right);
+            Vector3 targetPos = isRight ? worldSecondary : worldPrimary;
 
-            // Move the controller’s root so that the controller sits at the attach point
-            // (Assumes the XR Controller GameObject is the parent of the interactor component.)
+            // Move the controller’s parent so the controller appears at the attach point
             var controllerRoot = inter.transform.parent;
             if (controllerRoot != null)
-                controllerRoot.position = target;
+                controllerRoot.position = targetPos;
         }
-        
-        //Debug.Log(dist);
     }
-
     
 
 
@@ -150,17 +162,15 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
         }
     }
     
-    
+    */
     
 
+    /*
     protected override void OnSelectExited(SelectExitEventArgs args)
     {
+        // Let XRGrabInteractable restore its internal state (colliders, Rigidbody)
         base.OnSelectExited(args);
-
-        if (interactorsSelecting.Count < 2)
-        {
-            // One or zero hands remain—back to “not grabbed” state
-            // TODO: e.g. freeze object, reset any partial two-hand state
-        }
-    }*/
+    }
+    */
+    
 }
