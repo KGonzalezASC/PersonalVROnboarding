@@ -65,7 +65,9 @@ public class GazeCapsuleHighlighter : MonoBehaviour
             {
                 ClearHighlight();
                 ApplyHighlight(hitGo);
+                /*
                 Debug.Log($"Gazed hit: {hitGo.name}");
+                */
             }
         }
         else

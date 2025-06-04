@@ -1747,6 +1747,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   secondaryButton: {fileID: 6281229486188515486, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   target: {fileID: 56551639}
+--- !u!143 &1220530515 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 6232745470614056090, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 928525928}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1360895868 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -2064,6 +2069,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   primaryAButton: {fileID: -5335430055185607589, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   xrOrigin: {fileID: 1220530509}
+  characterController: {fileID: 1220530515}
+  headTopOffset: 0.14
+  lastAdjustedHeight: {x: 0, y: 0, z: 0}
 --- !u!4 &1937127806
 Transform:
   m_ObjectHideFlags: 0

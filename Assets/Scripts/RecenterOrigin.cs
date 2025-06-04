@@ -8,12 +8,12 @@ public class RecenterOrigin : MonoBehaviour
     [SerializeField] private InputActionReference secondaryButton;
     public Transform target;
 
-    private XROrigin _xrOrigin;
-    private Camera   _mainCam;
+   [SerializeField] private XROrigin _xrOrigin;
+   [SerializeField] private HeightMarshal _heightMarshal;
+   private Camera   _mainCam;
 
     private void Awake()
     {
-        _xrOrigin = GetComponent<XROrigin>();
         _mainCam  = Camera.main;  // assume your XR camera is the “MainCamera”
     }
 
@@ -38,6 +38,7 @@ public class RecenterOrigin : MonoBehaviour
     private void OnBButtonPressed(InputAction.CallbackContext ctx)
     {
         RecenterXZ();
+        _heightMarshal.AlignRigToSurfaceBelow();
     }
 
     //i want to fix the y a different way
