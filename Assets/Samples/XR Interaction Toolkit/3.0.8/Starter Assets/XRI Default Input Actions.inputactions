@@ -2086,6 +2086,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "RescaleAvatar",
+                    "type": "Button",
+                    "id": "199d1eb8-934b-4b82-a1a6-6f4d21fd634b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -2372,6 +2381,17 @@
                     "processors": "ScaleVector2(x=0),StickDeadzone",
                     "groups": "",
                     "action": "Translate Manipulation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eff312f9-55d3-4e99-9b8f-747b9d50c132",
+                    "path": "<XRController>{RightHand}/{SecondaryButton}",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RescaleAvatar",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
