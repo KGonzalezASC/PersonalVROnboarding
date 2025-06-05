@@ -21,6 +21,7 @@ public class HeightMarshal : MonoBehaviour
     
     [SerializeField] private float headTopOffset = 0.14f;/// Eye-level offset from tracked head to top of head (e.g. ~0.14m for Quest 3). Used only for SetAllowRecentering after first valid height.
     [SerializeField, ReadOnly] private Vector3 lastAdjustedHeight = Vector3.zero;
+    [SerializeField] DebugTextManager debugManager;
 
     #region Private Fields
 
@@ -126,8 +127,12 @@ public class HeightMarshal : MonoBehaviour
         foreach (var sub in _subsystems)
         {
             bool setFloor = sub.TrySetTrackingOriginMode(TrackingOriginModeFlags.Floor);
-            if (setFloor)
-                Debug.Log($"[HeightMarshal] Requested Floor mode (height) on {sub.subsystemDescriptor.id}");
+            
+            if (setFloor) {
+                string message = $"[HeightMarshal] Requested Floor mode (height) on {sub.subsystemDescriptor.id}";
+                Debug.Log(message);
+                LogLine(message);
+            }
             else
                 Debug.LogWarning($"[HeightMarshal] Failed height RequestFloorMode on {sub.subsystemDescriptor.id}");
         }
@@ -136,6 +141,7 @@ public class HeightMarshal : MonoBehaviour
         {
             OpenXRSettings.SetAllowRecentering(true, height);
             Debug.Log($"[HeightMarshal] OpenXRSetAllowRecentering(true, {height:F2}) called");
+            LogLine($"[HeightMarshal] OpenXRSetAllowRecentering(true, {height:F2}) called");
         }
         else
         {
@@ -209,6 +215,7 @@ public class HeightMarshal : MonoBehaviour
             characterController.center = newCenter;
 
             Debug.Log($"[HeightMarshal] CharacterController resized: Height={newHeight:F3}m, CenterY={newCenter.y:F3}m.");
+            LogLine($"[HeightMarshal] CharacterController resized: Height={newHeight:F3}m, CenterY={newCenter.y:F3}m.");
         }
         else
         {
@@ -258,6 +265,12 @@ public class HeightMarshal : MonoBehaviour
         {
             Debug.LogWarning("[HeightMarshal] No surface detected below CharacterController within 5m.");
         }
+    }
+    
+    private void LogLine(string line)
+    {
+        debugManager?.AddLine(line);
+        Debug.Log(line);
     }
 }
 

@@ -116,6 +116,7 @@ MonoBehaviour:
   m_Name: MyXRReadyCallback Standalone
   m_EditorClassIdentifier: 
   m_enabled: 1
+  <failedInitialization>k__BackingField: 0
   nameUi: Plug Power Plugin
   version: 0.0.1
   featureIdInternal: Doo Doo fart
@@ -302,6 +303,7 @@ MonoBehaviour:
   m_Name: MyXRReadyCallback Android
   m_EditorClassIdentifier: 
   m_enabled: 1
+  <failedInitialization>k__BackingField: 0
   nameUi: Plug Power Plugin
   version: 0.0.1
   featureIdInternal: Doo Doo fart
@@ -487,7 +489,6 @@ MonoBehaviour:
   - {fileID: -2341919201661494293}
   - {fileID: 3070514496208807097}
   - {fileID: 695763306437922806}
-  - {fileID: -5559900445428233206}
   - {fileID: -4225015819676567454}
   - {fileID: 930568955602536876}
   - {fileID: -9147098317533368443}
@@ -993,7 +994,6 @@ MonoBehaviour:
   - {fileID: -4982568876813297038}
   - {fileID: 7824117402459493429}
   - {fileID: -122698837498346928}
-  - {fileID: -7735794024953249788}
   - {fileID: 4869311821511905553}
   - {fileID: -950406892001648519}
   - {fileID: 2887983356713783718}
