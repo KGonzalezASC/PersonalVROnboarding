@@ -7,7 +7,8 @@ public class Resize : MonoBehaviour
     public InputActionReference resizeAction;
 
     [SerializeField] private GameObject playerAvatar;
-    [SerializeField] private CharacterController characterController;
+    //[SerializeField] private CharacterController characterController;
+    [SerializeField] private Transform cameraHeight;
     [SerializeField] private Transform leftController;
     [SerializeField] private Transform rightController;
     
@@ -15,44 +16,51 @@ public class Resize : MonoBehaviour
     [SerializeField] private Transform LeftShoulder, LeftUpperArm, LeftLowerArm, LeftHand;
 
     private float heightScale;
-    private float defaultHeight = 1.0f;
+    private float defaultHeight = 1.83f;
+
+    private float defaultArm = 0.584f;
+    
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         resizeAction.action.Enable();
         resizeAction.action.performed += OnResize;
-        resizeAction.action.performed += ResizeArms;
+       // resizeAction.action.performed += ResizeArms;
     }
 
     private void OnDestroy()
     {
         resizeAction.action.Disable();
         resizeAction.action.performed -= OnResize;
-        resizeAction.action.performed -= ResizeArms;
+        //resizeAction.action.performed -= ResizeArms;
     }
     
     //Resizes the avatar based on the height of the character controller
     void OnResize(InputAction.CallbackContext ctx)
     {
-        heightScale = defaultHeight / characterController.height;
-        playerAvatar.transform.localScale = Vector3.one * heightScale;
+        heightScale = cameraHeight.position.y/ defaultHeight;
+        playerAvatar.transform.localScale = new Vector3(heightScale, heightScale, heightScale);;
     }
     
-    //Repositiong the joints based on the distance from the controllers to the shoulders 
+    //Repositiong the joints based on the distance from the controllers to the shoulders - joints does not move
     void ResizeArms(InputAction.CallbackContext ctx)
     {
-        float leftArmLength = Vector3.Distance(leftController.position, LeftShoulder.position);
-        Vector3 leftDirection = (leftController.position - LeftShoulder.position).normalized;
-        float rightArmLength = Vector3.Distance(rightController.position, RightShoulder.position);
-        Vector3 rightDirection = (rightController.position - RightShoulder.position).normalized;
+        float armLength = Vector3.Distance(leftController.position, LeftShoulder.position);
+        float armScale = armLength / defaultArm;
         
-        LeftUpperArm.position = LeftShoulder.position + leftDirection * (leftArmLength * 0.33f);
-        LeftLowerArm.position = LeftShoulder.position + leftDirection * (leftArmLength * 0.66f);
-        //LeftUpperArm.position = LeftShoulder.position + leftDirection * (leftArmLength * 0.33f);
         
-        RightUpperArm.position = LeftShoulder.position + leftDirection * (leftArmLength * 0.33f);
-        RightLowerArm.position = LeftShoulder.position + leftDirection * (leftArmLength * 0.66f);
-        //LeftUpperArm.position = LeftShoulder.position + leftDirection * (leftArmLength * 0.33f);
+        Vector3 direction = (LeftLowerArm.position - leftController.position).normalized;
+        Vector3 upperLength = LeftShoulder.position + direction * (armLength * 0.33f);
+        Vector3 lowerLength = LeftUpperArm.position + direction * (armLength * 0.33f);
+
+        float upperScale = armScale;
+        float lowerScale =  armScale;
+
+        LeftUpperArm.localScale = Vector3.one * armScale;
+        LeftLowerArm.localScale = Vector3.one * armScale;
+        
+        RightUpperArm.localScale = Vector3.one * upperScale;
+        RightLowerArm.localScale = Vector3.one * lowerScale;
     }
 }

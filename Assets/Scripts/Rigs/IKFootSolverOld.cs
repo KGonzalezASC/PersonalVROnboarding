@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class IKFootSolver : MonoBehaviour
+public class IKFootSolverOld : MonoBehaviour
 {
     public bool isMovingForward;
 
     [SerializeField] LayerMask terrainLayer = default;
     [SerializeField] Transform body = default;
-    [SerializeField] IKFootSolver otherFoot = default;
+    [SerializeField] IKFootSolverOld otherFoot = default;
     [SerializeField] float speed = 4;
     [SerializeField] float stepDistance = .2f;
     [SerializeField] float stepLength = .2f;
@@ -101,7 +99,4 @@ public class IKFootSolver : MonoBehaviour
     {
         return lerp < 1;
     }
-
-
-
 }
