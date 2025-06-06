@@ -185,14 +185,14 @@ public class SubsystemPrinterRefactored : MonoBehaviour
         while (elapsed < duration)
         {
             float t = elapsed / duration;
-            boundaryFound.transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+           // boundaryFound.transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
             float rotationThisFrame = 360f * (Time.deltaTime / duration);
             boundaryFound.transform.Rotate(Vector3.up, rotationThisFrame, Space.Self);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        boundaryFound.transform.localScale = targetScale;
+       // boundaryFound.transform.localScale = targetScale;
         float overshoot = 360f - (360f * (elapsed - Time.deltaTime) / duration);
         boundaryFound.transform.Rotate(Vector3.up, overshoot, Space.Self);
         LogLine("[SubsystemPrinter] Cube spin‐grow complete.");
@@ -256,3 +256,4 @@ public class SubsystemPrinterRefactored : MonoBehaviour
         Debug.Log(line);
     }
 }
+

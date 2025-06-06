@@ -8,7 +8,7 @@ public class Resize : MonoBehaviour
 
     [SerializeField] private GameObject playerAvatar;
     //[SerializeField] private CharacterController characterController;
-    [SerializeField] private Transform cameraHeight;
+    [SerializeField] private Transform cameraHeight;        //player's eye level in the game
     [SerializeField] private Transform leftController;
     [SerializeField] private Transform rightController;
     
@@ -17,8 +17,10 @@ public class Resize : MonoBehaviour
 
     private float heightScale;
     private float defaultHeight = 1.83f;
+    public bool isManualResizing = false;
 
-    private float defaultArm = 0.584f;
+    private float defaultArm = 0.584f;  //model's arm length
+    public float neckLength = 0.35f;        //average size for women is 0.35m and 0.41m for men
     
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -26,7 +28,7 @@ public class Resize : MonoBehaviour
     {
         resizeAction.action.Enable();
         resizeAction.action.performed += OnResize;
-       // resizeAction.action.performed += ResizeArms;
+        //resizeAction.action.performed += ResizeArms;
     }
 
     private void OnDestroy()
@@ -43,24 +45,25 @@ public class Resize : MonoBehaviour
         playerAvatar.transform.localScale = new Vector3(heightScale, heightScale, heightScale);;
     }
     
-    //Repositiong the joints based on the distance from the controllers to the shoulders - joints does not move
+    //basically, using trigo to calculate the arm length of the user and then resizing it with the 
+    //model's arm length by the unit to make sure that it is properly scaled up
     void ResizeArms(InputAction.CallbackContext ctx)
     {
-        float armLength = Vector3.Distance(leftController.position, LeftShoulder.position);
-        float armScale = armLength / defaultArm;
+        //perpendicular to the left controller
+        float headsetToShoulderDistance = Vector3.Distance(cameraHeight.position, LeftShoulder.position);
+        float headsetToControllerDistance = neckLength; //Vector3.Distance(cameraHeight.position, leftController.position);
+        float angle = Mathf.Asin(headsetToShoulderDistance / headsetToControllerDistance);
+        float actualArmLength = headsetToControllerDistance * Mathf.Cos(angle);     //computes the actual length
         
+        /*float armRatio = actualArmLength / defaultArm;  //finds the ratio
+        RightShoulder.localScale = new Vector3(armRatio, armRatio, armRatio);
+        RightUpperArm.localScale = new Vector3(armRatio, armRatio, armRatio);
+        RightLowerArm.localScale = new Vector3(armRatio, armRatio, armRatio);
         
-        Vector3 direction = (LeftLowerArm.position - leftController.position).normalized;
-        Vector3 upperLength = LeftShoulder.position + direction * (armLength * 0.33f);
-        Vector3 lowerLength = LeftUpperArm.position + direction * (armLength * 0.33f);
-
-        float upperScale = armScale;
-        float lowerScale =  armScale;
-
-        LeftUpperArm.localScale = Vector3.one * armScale;
-        LeftLowerArm.localScale = Vector3.one * armScale;
-        
-        RightUpperArm.localScale = Vector3.one * upperScale;
-        RightLowerArm.localScale = Vector3.one * lowerScale;
+        //LeftShoulder.localScale = new Vector3(armRatio, armRatio, armRatio);
+        LeftUpperArm.localScale = new Vector3(armRatio, armRatio, armRatio);
+        LeftLowerArm.localScale = new Vector3(armRatio, armRatio, armRatio);*/
     }
+
+    
 }
