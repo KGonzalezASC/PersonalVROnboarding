@@ -4,7 +4,6 @@ using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
-using UnityEngine.Serialization;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.OpenXR;
@@ -95,8 +94,8 @@ public class HeightMarshal : MonoBehaviour
         {
             //I prefer device position over center eye position //provides raw tracking data/device space from the headset's center of mass including predictions from openxr runtime.
             Vector3 headPos = _xrHmd.devicePosition.ReadValue();
-            Debug.Log($"Head position (device space): {headPos}");
-            Debug.Log($"Top of head position (actual height relative): {headPos.y + 0.14f}");
+            //Debug.Log($"Head position (device space): {headPos}");
+            //Debug.Log($"Top of head position (actual height relative): {headPos.y + 0.14f}");
             lastAdjustedHeight = new Vector3(headPos.x, headPos.y + 0.14f, headPos.z);
             RequestFloorMode(ref lastAdjustedHeight.y);
             ResizeCharacterController(lastAdjustedHeight.y);
@@ -130,7 +129,7 @@ public class HeightMarshal : MonoBehaviour
             
             if (setFloor) {
                 string message = $"[HeightMarshal] Requested Floor mode (height) on {sub.subsystemDescriptor.id}";
-                Debug.Log(message);
+                //Debug.Log(message);
                 LogLine(message);
             }
             else
@@ -140,7 +139,7 @@ public class HeightMarshal : MonoBehaviour
         if (height > 0.1f)
         {
             OpenXRSettings.SetAllowRecentering(true, height);
-            Debug.Log($"[HeightMarshal] OpenXRSetAllowRecentering(true, {height:F2}) called");
+            //Debug.Log($"[HeightMarshal] OpenXRSetAllowRecentering(true, {height:F2}) called");
             LogLine($"[HeightMarshal] OpenXRSetAllowRecentering(true, {height:F2}) called");
         }
         else
@@ -157,7 +156,7 @@ public class HeightMarshal : MonoBehaviour
         const float timeout = 5f;
         float timer = 0f;
 
-        Debug.Log("[HeightMarshal] Waiting for valid headset tracking...");
+        //Debug.Log("[HeightMarshal] Waiting for valid headset tracking...");
         yield return new WaitForEndOfFrame();
 
         while (_xrHmd != null && _gotHmd)
@@ -168,8 +167,8 @@ public class HeightMarshal : MonoBehaviour
                 float adjustedY = headPos.y + headTopOffset;
                 lastAdjustedHeight = new Vector3(headPos.x, adjustedY, headPos.z);
 
-                Debug.Log($"[HeightMarshal] First valid head position (device space): {headPos}");
-                Debug.Log($"[HeightMarshal] Estimated true head height (device + offset): {adjustedY:F3}m");
+                //Debug.Log($"[HeightMarshal] First valid head position (device space): {headPos}");
+                //Debug.Log($"[HeightMarshal] Estimated true head height (device + offset): {adjustedY:F3}m");
 
                 RequestFloorMode(ref adjustedY);
                 ResizeCharacterController(adjustedY);
@@ -214,7 +213,7 @@ public class HeightMarshal : MonoBehaviour
             newCenter.y = newHeight / 2f;
             characterController.center = newCenter;
 
-            Debug.Log($"[HeightMarshal] CharacterController resized: Height={newHeight:F3}m, CenterY={newCenter.y:F3}m.");
+            //Debug.Log($"[HeightMarshal] CharacterController resized: Height={newHeight:F3}m, CenterY={newCenter.y:F3}m.");
             LogLine($"[HeightMarshal] CharacterController resized: Height={newHeight:F3}m, CenterY={newCenter.y:F3}m.");
         }
         else
@@ -259,7 +258,7 @@ public class HeightMarshal : MonoBehaviour
             Vector3 rigPos = xrOrigin.transform.position;
             xrOrigin.transform.position = new Vector3(rigPos.x, rigPos.y + deltaY, rigPos.z);
 
-            Debug.Log($"[HeightMarshal] Aligned rig so capsule feet sit on Y={hitInfo.point.y:F3}. Moved root by ΔY={deltaY:F3}m.");
+            //Debug.Log($"[HeightMarshal] Aligned rig so capsule feet sit on Y={hitInfo.point.y:F3}. Moved root by ΔY={deltaY:F3}m.");
         }
         else
         {
@@ -270,7 +269,7 @@ public class HeightMarshal : MonoBehaviour
     private void LogLine(string line)
     {
         debugManager?.AddLine(line);
-        Debug.Log(line);
+        //Debug.Log(line);
     }
 }
 
