@@ -1,0 +1,168 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+/// <summary>
+/// A composite of of mandatory and free tasks
+/// Mandatory tasks have to be done in order to start time tracking the next mandatory task.
+/// Free tasks can be done in any order.
+/// However, doing a free task during a mandatory task does not stop the timer for it.
+/// Pluggy will pause the timer between talking about tasks throughout "demo mode" to build a time baseline.
+///
+/// every speedrun will include start, end, and expected time [and rather than having those expected times be pre-provided (when the game is fully ready to ship), these expected times are made
+/// from the Pluggy "demo mode".]
+/// </summary>
+public class SpeedrunSequence
+{
+    private readonly List<SpeedrunTask> _mandatoryTasks = new();
+    private readonly List<SpeedrunTask> _freeTasks      = new();
+    private int _nextMandatoryIndex;
+
+
+    public bool IsRunning=false;
+
+    public IReadOnlyList<SpeedrunTask> MandatoryTasks => _mandatoryTasks;
+
+    public IReadOnlyList<SpeedrunTask> FreeTasks => _freeTasks;
+    public IEnumerable<SpeedrunTask> AllTasks()
+        => _mandatoryTasks.Concat(_freeTasks);
+
+    public float TotalAllTasksDuration
+        => AllTasks()
+            .Where(t => t.IsCompleted)
+            .Sum(t => t.ActualEndTime - t.ActualStartTime);
+    
+    public event Action<SpeedrunTask>        TaskStarted;
+    public event Action<SpeedrunTask, float> TaskCompleted;
+    public event Action                      AllMandatoryCompleted;
+    public event Action                      AllFreeCompleted;
+    public event Action                      SequenceComplete;
+    
+    
+
+#region Sequence Creation:
+
+    /// <summary>Adds a mandatory task (auto-assigns its MandIndex).</summary>
+    public SpeedrunTask AddMandatory(string name, float expectedTime) {
+        var task = new SpeedrunTask(name, expectedTime, true, _mandatoryTasks.Count);
+        _mandatoryTasks.Add(task);
+        return task;
+    }
+
+    public SpeedrunTask AddFree(string name, float expectedTime) {
+        var task = new SpeedrunTask(name, expectedTime, false);
+        _freeTasks.Add(task);
+        return task;
+    }
+
+    /// <summary>
+    ///     Example: build a hypothetical pizza-making sequence.
+    /// </summary>
+    public static SpeedrunSequence BuildPizzaSequence() {
+        var seq = new SpeedrunSequence();
+
+        // Mandatory steps (will have MandIndex 0,1,2...)
+        seq.AddMandatory("Roll dough", 60f);
+        seq.AddMandatory("Spread sauce", 30f);
+        seq.AddMandatory("Add pepperoni", 20f);
+
+        // Free tasks (MandIndex = -1 automatically)
+        seq.AddFree("Preheat oven", 45f);
+        seq.AddFree("Pour drink", 15f);
+        seq.AddFree("Set table", -1f);
+        seq.AddFree("Fry mozzarella", 90f);
+
+        return seq;
+    }
+    
+#endregion
+
+#region Progression:
+
+    public void StartNextMandatory() {
+        if (_nextMandatoryIndex >= _mandatoryTasks.Count) return;
+
+        var task = _mandatoryTasks[_nextMandatoryIndex];
+        Debug.Log(task.Name);
+        task.ActualStartTime = Time.time;
+        TaskStarted?.Invoke(task);
+    }
+
+    
+    public void StartFreeTask(SpeedrunTask task) {
+        if (!_freeTasks.Contains(task) || task.IsCompleted) return;
+
+        task.ActualStartTime = Time.time;
+        TaskStarted?.Invoke(task);
+    }
+    
+    public void CompleteTask(SpeedrunTask task) {
+        if (task.IsCompleted) return;
+
+        task.ActualEndTime = Time.time;
+        float actualDur    = task.ActualEndTime - task.ActualStartTime;
+        TaskCompleted?.Invoke(task, actualDur);
+
+        if (task.IsMandatory) {
+            _nextMandatoryIndex++;
+            if (_nextMandatoryIndex >= _mandatoryTasks.Count)
+                AllMandatoryCompleted?.Invoke();
+        }
+        else {
+            if (_freeTasks.All(t => t.IsCompleted))
+                AllFreeCompleted?.Invoke();
+        }
+
+        // if EVERYTHING is done:
+        if (_mandatoryTasks.All(t => t.IsCompleted)
+            && _freeTasks.All(t => t.IsCompleted)) {
+            SequenceComplete?.Invoke();
+        }
+    }
+    
+    public void ResetSequence()
+    {
+        // Reset mandatory pointer
+        _nextMandatoryIndex = 0;
+
+        // Clear all timing data
+        foreach (var t in AllTasks())
+        {
+            t.ActualStartTime = 0f;
+            t.ActualEndTime   = 0f;
+        }
+    }
+    
+#endregion
+}
+
+
+
+/// <summary>
+/// A single speedrun task (mandatory or free), with ordering metadata.
+/// </summary>
+public class SpeedrunTask
+{ 
+    public string Name { get; }
+    public float ExpectedTime { get; } //Expected time <0 is effectively untimed
+    public bool IsMandatory { get; }
+
+    /// <summary>
+    /// If mandatory: its zero-based order index (0 = first).  
+    /// If free: set to –1.
+    /// </summary>
+    public int MandIndex { get; }
+    public float ActualStartTime { get; set; }
+    public float ActualEndTime   { get; set; }
+
+    /// <summary>True once the end time has been recorded.</summary>
+    public bool IsCompleted => ActualEndTime > 0f;
+
+    public SpeedrunTask(string name, float expectedTime, bool isMandatory, int mandIndex = -1) {
+        Name           = name;
+        ExpectedTime   = expectedTime;
+        IsMandatory    = isMandatory;
+        MandIndex      = isMandatory ? mandIndex : -1;
+    }
+}
