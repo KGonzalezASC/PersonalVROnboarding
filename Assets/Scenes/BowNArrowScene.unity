@@ -2142,6 +2142,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6528530117482412838, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6553456492286146741, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -2169,6 +2173,10 @@ PrefabInstance:
     - target: {fileID: 8341962337745733521, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8366379412631108205, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8748500131873809389, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Layer
@@ -2208,6 +2216,82 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
   m_PrefabInstance: {fileID: 928525928}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< Updated upstream
+=======
+--- !u!1 &941172630 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1443212247926862001, guid: 23ca55b959f74f644a146c2941bd6028, type: 3}
+  m_PrefabInstance: {fileID: 1647654218}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &941172633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941172630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 202f960b2a24b9949becfe50bdebb9dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isMovingForward: 0
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  body: {fileID: 953764467}
+  otherFoot: {fileID: 1231103580}
+  speed: 4
+  stepDistance: 0.2
+  stepLength: 0.2
+  sideStepLength: 0.1
+  stepHeight: 0.3
+  footOffset: {x: 0, y: 0, z: 0}
+  footRotOffset: {x: -241.3, y: 0, z: 0}
+  footYPosOffset: 0.1
+  rayStartYOffset: 0
+  rayLength: 1.5
+--- !u!1 &953764462 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3754761904035196560, guid: 23ca55b959f74f644a146c2941bd6028, type: 3}
+  m_PrefabInstance: {fileID: 1647654218}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &953764467 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4562226285171946538, guid: 23ca55b959f74f644a146c2941bd6028, type: 3}
+  m_PrefabInstance: {fileID: 1647654218}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &953764472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953764462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 759e282fbc2218643864d99078494f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnSmoothness: 0.1
+  head:
+    vrTarget: {fileID: 1360895877}
+    ikTarget: {fileID: 1333870610}
+    trackingPositionOffset: {x: 0, y: 0, z: 0}
+    trackingRotationOffset: {x: 0, y: 0, z: 0}
+  leftHand:
+    vrTarget: {fileID: 331372285}
+    ikTarget: {fileID: 1226910915}
+    trackingPositionOffset: {x: 0, y: 0, z: 0}
+    trackingRotationOffset: {x: -76, y: 123.1, z: 59}
+  rightHand:
+    vrTarget: {fileID: 1048689285}
+    ikTarget: {fileID: 85539870}
+    trackingPositionOffset: {x: 0, y: 0, z: 0}
+    trackingRotationOffset: {x: -71, y: -104.8, z: -77.4}
+  headBodyPositionOffset: {x: 0, y: -0.64, z: 0.09}
+  headBodyYawOffset: 0
+>>>>>>> Stashed changes
 --- !u!4 &1048689285 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1670256625, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}

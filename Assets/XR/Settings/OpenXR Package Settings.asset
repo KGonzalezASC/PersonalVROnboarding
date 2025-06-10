@@ -196,7 +196,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1927c045052a06d49a9b21fdcaa26db6, type: 3}
   m_Name: MetaXRFeature Android
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
   m_enabled: 1
+=======
+  m_enabled: 0
+>>>>>>> Stashed changes
   nameUi: Meta XR Feature
   version: 0.0.1
   featureIdInternal: com.meta.openxr.feature.metaxr
