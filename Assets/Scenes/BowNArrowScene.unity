@@ -906,6 +906,18 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.042547908
       objectReference: {fileID: 0}
+    - target: {fileID: 189626769598692598, guid: 8f82e098d14598541a1daac38e1f2d47, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 189626769598692598, guid: 8f82e098d14598541a1daac38e1f2d47, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00094
+      objectReference: {fileID: 0}
+    - target: {fileID: 189626769598692598, guid: 8f82e098d14598541a1daac38e1f2d47, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.00004
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8f82e098d14598541a1daac38e1f2d47, type: 3}
       propertyPath: m_Name
       value: test 2
@@ -923,6 +935,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8f82e098d14598541a1daac38e1f2d47, type: 3}
       insertIndex: -1
       addedObject: {fileID: 168114023}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8f82e098d14598541a1daac38e1f2d47, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 168114024}
     - targetCorrespondingSourceObject: {fileID: 5670878055021044771, guid: 8f82e098d14598541a1daac38e1f2d47, type: 3}
       insertIndex: -1
       addedObject: {fileID: 168114021}
@@ -1352,21 +1367,51 @@ MonoBehaviour:
   turnSmoothness: 0.1
   head:
     vrTarget: {fileID: 1833062144}
-    ikTarget: {fileID: 1262182517}
+    ikTarget: {fileID: 1915076568}
     trackingPositionOffset: {x: 0, y: 0, z: 0}
     trackingRotationOffset: {x: 0, y: 0, z: 0}
   leftHand:
     vrTarget: {fileID: 1203099983}
-    ikTarget: {fileID: 1676719372}
+    ikTarget: {fileID: 493575407}
     trackingPositionOffset: {x: 0, y: 0, z: 0}
     trackingRotationOffset: {x: 0, y: 0, z: 0}
   rightHand:
     vrTarget: {fileID: 559303508}
-    ikTarget: {fileID: 1120001879}
+    ikTarget: {fileID: 107273979}
     trackingPositionOffset: {x: 0, y: 0, z: 0}
     trackingRotationOffset: {x: 0, y: 0, z: 0}
-  headBodyOffset: {x: 0, y: 0, z: 0}
+  headBodyOffset: {x: 0, y: -0.52, z: 0}
   headYawOffset: 0
+--- !u!114 &168114024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168113956}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 759e282fbc2218643864d99078494f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnSmoothness: 0.1
+  head:
+    vrTarget: {fileID: 1833062144}
+    ikTarget: {fileID: 1915076568}
+    trackingPositionOffset: {x: 0, y: 0, z: 0}
+    trackingRotationOffset: {x: 0, y: 0, z: 0}
+  leftHand:
+    vrTarget: {fileID: 1203099983}
+    ikTarget: {fileID: 493575407}
+    trackingPositionOffset: {x: 0, y: 0, z: 0}
+    trackingRotationOffset: {x: 0, y: 0, z: 0}
+  rightHand:
+    vrTarget: {fileID: 559303508}
+    ikTarget: {fileID: 107273979}
+    trackingPositionOffset: {x: 0, y: 0, z: 0}
+    trackingRotationOffset: {x: 0, y: 0, z: 0}
+  headBodyPositionOffset: {x: 0, y: -0.52, z: 0}
+  headBodyYawOffset: 0
 --- !u!1 &177891164 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 157208263415299932, guid: 6d31f49b74f7fce449823616e2ef04bd, type: 3}
@@ -1983,13 +2028,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559303507}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1048689285}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!1 &581404176 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5227401581421119954, guid: 6d31f49b74f7fce449823616e2ef04bd, type: 3}
@@ -2714,6 +2759,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1143955932}
+  - component: {fileID: 1143955933}
   m_Layer: 0
   m_Name: Left leg IK_target
   m_TagString: Untagged
@@ -2737,6 +2783,34 @@ Transform:
   - {fileID: 2088180931}
   m_Father: {fileID: 426997754}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1143955933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143955931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 202f960b2a24b9949becfe50bdebb9dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isMovingForward: 0
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  body: {fileID: 168114019}
+  otherFoot: {fileID: 2126082133}
+  speed: 4
+  stepDistance: 0.2
+  stepLength: 0.2
+  sideStepLength: 0.1
+  stepHeight: 0.3
+  footOffset: {x: 0, y: 0, z: 0}
+  footRotOffset: {x: -241.3, y: 0, z: 0}
+  footYPosOffset: 0.1
+  rayStartYOffset: 0
+  rayLength: 1.5
 --- !u!1 &1182453618
 GameObject:
   m_ObjectHideFlags: 0
@@ -2869,13 +2943,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203099982}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 331372285}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &1220530509 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1178791450436251564, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -2921,18 +2995,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resizeAction: {fileID: -5335430055185607589, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  playerAvatar: {fileID: 0}
+  playerAvatar: {fileID: 168113956}
   cameraHeight: {fileID: 1360895877}
-  leftController: {fileID: 331372285}
-  rightController: {fileID: 1048689285}
-  RightShoulder: {fileID: 0}
-  RightUpperArm: {fileID: 0}
-  RightLowerArm: {fileID: 0}
-  RightHand: {fileID: 0}
-  LeftShoulder: {fileID: 0}
-  LeftUpperArm: {fileID: 0}
-  LeftLowerArm: {fileID: 0}
-  LeftHand: {fileID: 0}
+  leftController: {fileID: 1203099983}
+  rightController: {fileID: 559303508}
+  RightShoulder: {fileID: 168113970}
+  RightUpperArm: {fileID: 168113971}
+  RightLowerArm: {fileID: 168113972}
+  RightHand: {fileID: 168113973}
+  LeftShoulder: {fileID: 168113993}
+  LeftUpperArm: {fileID: 168113994}
+  LeftLowerArm: {fileID: 168113995}
+  LeftHand: {fileID: 168113996}
   isManualResizing: 0
   neckLength: 0.35
 --- !u!1 &1262182516
@@ -3431,7 +3505,7 @@ Transform:
   m_GameObject: {fileID: 1915076567}
   serializedVersion: 2
   m_LocalRotation: {x: 0.05556628, y: -0.00000023805033, z: -0.000000013248034, w: 0.99845505}
-  m_LocalPosition: {x: 0, y: 1.5711994, z: -0.0041122437}
+  m_LocalPosition: {x: 0, y: 1.673, z: 0.086}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4257,6 +4331,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2126082132}
+  - component: {fileID: 2126082133}
   m_Layer: 0
   m_Name: Right Leg IK_target
   m_TagString: Untagged
@@ -4280,6 +4355,34 @@ Transform:
   - {fileID: 1365443391}
   m_Father: {fileID: 489990806}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2126082133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126082131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 202f960b2a24b9949becfe50bdebb9dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isMovingForward: 0
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  body: {fileID: 168114019}
+  otherFoot: {fileID: 1143955933}
+  speed: 4
+  stepDistance: 0.2
+  stepLength: 0.2
+  sideStepLength: 0.1
+  stepHeight: 0.3
+  footOffset: {x: 0, y: 0, z: 0}
+  footRotOffset: {x: -241.3, y: 0, z: 0}
+  footYPosOffset: 0.1
+  rayStartYOffset: 0
+  rayLength: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

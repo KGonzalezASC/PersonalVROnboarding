@@ -33,8 +33,8 @@ public class RigController : MonoBehaviour
         //Moves the mesh accordingly to make sure it looks good 
         transform.position = head.ikTarget.position;
         float yaw = head.vrTarget.eulerAngles.y;
-        transform.rotation = Quaternion.Lerp(transform.rotation, 
-            Quaternion.Euler(transform.eulerAngles.x, yaw, transform.eulerAngles.z), turnSmoothness);
+        transform.rotation = //Quaternion.Lerp(transform.rotation, 
+            Quaternion.Euler(transform.eulerAngles.x, yaw, transform.eulerAngles.z); //, turnSmoothness);
 
         //Maps the controller
         head.Map();

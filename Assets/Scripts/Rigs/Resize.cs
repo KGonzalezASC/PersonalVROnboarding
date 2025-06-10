@@ -57,6 +57,7 @@ public class Resize : MonoBehaviour
         // Only scale upper and lower arm bones
         LeftUpperArm.localScale = Vector3.one * leftArmRatio;
         LeftLowerArm.localScale = Vector3.one * leftArmRatio;
+        
 
         RightUpperArm.localScale = Vector3.one * rightArmRatio;
         RightLowerArm.localScale = Vector3.one * rightArmRatio;
