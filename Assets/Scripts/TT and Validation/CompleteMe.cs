@@ -24,6 +24,9 @@ public class InspectorTaskCompleter : MonoBehaviour
             .FirstOrDefault(t => t.Name == taskName);
 
         if (task != null && !task.IsCompleted)
+            //add validation before starting next mandatory task and if not done correctly resume timer somehow. --task mandatory index start from where you left off.
+        
+        
             TaskMarshal.Instance.CompleteTask(task);
         if (task != null && task.IsMandatory)
             TaskMarshal.Instance.StartNextMandatory();

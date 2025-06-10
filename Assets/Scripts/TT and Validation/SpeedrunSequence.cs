@@ -138,7 +138,6 @@ public class SpeedrunSequence
 }
 
 
-
 /// <summary>
 /// A single speedrun task (mandatory or free), with ordering metadata.
 /// </summary>
@@ -165,4 +164,7 @@ public class SpeedrunTask
         IsMandatory    = isMandatory;
         MandIndex      = isMandatory ? mandIndex : -1;
     }
+    
+    //VALIDATION:
+    public Func<SpeedrunTask,bool> Validator { get; set; }
 }
