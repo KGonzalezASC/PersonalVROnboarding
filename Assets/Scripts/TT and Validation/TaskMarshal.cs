@@ -21,13 +21,6 @@ public class TaskMarshal : NonPersistantSingleton<TaskMarshal>
         }
     }
     
-    
-    private void OnEnable()
-    {
-        // nothing to do until someone calls SetSequence(...)
-    }
-    
-    
     public void Start()
     {
         _debugTextManager.AddLine("Starting new sequence...");
@@ -37,8 +30,6 @@ public class TaskMarshal : NonPersistantSingleton<TaskMarshal>
         TaskMarshal.Instance.StartSequence();
     }
     
-    
-
     private void OnDisable()
     {
         if (Sequence != null)
@@ -138,4 +129,10 @@ public class TaskMarshal : NonPersistantSingleton<TaskMarshal>
     /// </summary>
     public void CompleteTask(SpeedrunTask task)
         => Sequence?.CompleteTask(task);
+    
+    
+    //LogLine wrapper:
+    public void Print(string line)
+        => _debugTextManager.AddLine(line);
+    
 }

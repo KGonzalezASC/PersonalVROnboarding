@@ -159,6 +159,9 @@ public class SpeedrunSequence
         }
     }
     
+    //TODO: add a reset that doesn't stop the timer just moves your tasks back to the start in case we need to repeat steps:
+    
+    
 #endregion
 }
 
