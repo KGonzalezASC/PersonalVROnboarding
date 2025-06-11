@@ -1,25 +1,21 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+//Attach it on the controllers
 public class Resize : MonoBehaviour
 {
     public InputActionReference resizeAction;
 
     [SerializeField] private GameObject playerAvatar;
-    //[SerializeField] private CharacterController characterController;
     [SerializeField] private Transform cameraHeight;        //player's eye level in the game
-    [SerializeField] private Transform leftController;
-    [SerializeField] private Transform rightController;
+    [SerializeField] private Transform controller;
     
-    [SerializeField] private Transform RightShoulder, RightUpperArm, RightLowerArm, RightHand;
-    [SerializeField] private Transform LeftShoulder, LeftUpperArm, LeftLowerArm, LeftHand;
+    [SerializeField] private Transform shoulder, upperArm, lowerArm, hand;
 
     private float heightScale;
     private float defaultHeight = 1.83f;
-    public bool isManualResizing = false;
 
-    private float defaultArm = 0.584f;  //model's arm length
+    private float defaultArm = 0.584f;      //model's arm length
     public float neckLength = 0.35f;        //average size for women is 0.35m and 0.41m for men
     
     
@@ -48,19 +44,11 @@ public class Resize : MonoBehaviour
     //scales arms based on controller's distance
     void ResizeArms(InputAction.CallbackContext ctx)
     {
-        float actualLeftArmLength = Vector3.Distance(LeftShoulder.position, leftController.position);
-        float actualRightArmLength = Vector3.Distance(RightShoulder.position, rightController.position);
+        float actualArmLength = Vector3.Distance(shoulder.position, controller.position);
+        float armRatio = actualArmLength / defaultArm;
 
-        float leftArmRatio = actualLeftArmLength / defaultArm;
-        float rightArmRatio = actualRightArmLength / defaultArm;
-
-        // Only scale upper and lower arm bones
-        LeftUpperArm.localScale = Vector3.one * leftArmRatio;
-        LeftLowerArm.localScale = Vector3.one * leftArmRatio;
-        
-
-        RightUpperArm.localScale = Vector3.one * rightArmRatio;
-        RightLowerArm.localScale = Vector3.one * rightArmRatio;
+        upperArm.localScale = Vector3.one * armRatio;
+        lowerArm.localScale = Vector3.one * armRatio;
     }
 
     
