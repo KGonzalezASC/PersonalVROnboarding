@@ -13,6 +13,22 @@ using UnityEngine;
 /// every speedrun will include start, end, and expected time [and rather than having those expected times be pre-provided (when the game is fully ready to ship), these expected times are made
 /// from the Pluggy "demo mode".]
 /// </summary>
+
+public enum TaskId
+{
+    RollDough,
+    SpreadSauce,
+    AddPepperoni,
+    PreheatOven,
+    PourDrink,
+    SetTable,
+    FryMozzarella,
+
+    COUNT  // must be last
+}
+
+
+
 public class SpeedrunSequence
 {
     private readonly List<SpeedrunTask> _mandatoryTasks = new();
@@ -41,20 +57,21 @@ public class SpeedrunSequence
     public event Action                      AllFreeCompleted;
     public event Action                      SequenceComplete;
     
-    
 
 #region Sequence Creation:
 
     /// <summary>Adds a mandatory task (auto-assigns its MandIndex).</summary>
-    public SpeedrunTask AddMandatory(string name, float expectedTime) {
+    public SpeedrunTask AddMandatory(TaskId name, float expectedTime) {
         var task = new SpeedrunTask(name, expectedTime, true, _mandatoryTasks.Count);
         _mandatoryTasks.Add(task);
+        _tasksById[(int)name] = task;
         return task;
     }
 
-    public SpeedrunTask AddFree(string name, float expectedTime) {
+    public SpeedrunTask AddFree(TaskId name, float expectedTime) {
         var task = new SpeedrunTask(name, expectedTime, false);
         _freeTasks.Add(task);
+        _tasksById[(int)name] = task;
         return task;
     }
 
@@ -65,15 +82,15 @@ public class SpeedrunSequence
         var seq = new SpeedrunSequence();
 
         // Mandatory steps (will have MandIndex 0,1,2...)
-        seq.AddMandatory("Roll dough", 60f);
-        seq.AddMandatory("Spread sauce", 30f);
-        seq.AddMandatory("Add pepperoni", 20f);
+        seq.AddMandatory(TaskId.RollDough, 60f);
+        seq.AddMandatory(TaskId.SpreadSauce, 30f);
+        seq.AddMandatory(TaskId.AddPepperoni, 20f);
 
         // Free tasks (MandIndex = -1 automatically)
-        seq.AddFree("Preheat oven", 45f);
-        seq.AddFree("Pour drink", 15f);
-        seq.AddFree("Set table", -1f);
-        seq.AddFree("Fry mozzarella", 90f);
+        seq.AddFree(TaskId.PreheatOven, 45f);
+        seq.AddFree(TaskId.PourDrink, 15f);
+        seq.AddFree(TaskId.SetTable, -1f);
+        seq.AddFree(TaskId.FryMozzarella, 90f);
 
         return seq;
     }
@@ -93,10 +110,10 @@ public class SpeedrunSequence
 
     
     public void StartFreeTask(SpeedrunTask task) {
-        if (!_freeTasks.Contains(task) || task.IsCompleted) return;
-
-        task.ActualStartTime = Time.time;
-        TaskStarted?.Invoke(task);
+        var freetask = _tasksById[(int)task.Id];
+        if (freetask == null || freetask.IsCompleted) return;
+        freetask.ActualStartTime = Time.time;
+        TaskStarted?.Invoke(freetask);
     }
     
     public void CompleteTask(SpeedrunTask task) {
@@ -123,6 +140,12 @@ public class SpeedrunSequence
         }
     }
     
+    public bool TryGetTask(TaskId id, out SpeedrunTask task)
+    {
+        task = _tasksById[(int)id];
+        return task != null;
+    }
+    
     public void ResetSequence()
     {
         // Reset mandatory pointer
@@ -138,24 +161,6 @@ public class SpeedrunSequence
     
 #endregion
 }
-
-
-
-public enum TaskId
-{
-    RollDough,
-    SpreadSauce,
-    AddPepperoni,
-    PreheatOven,
-    PourDrink,
-    SetTable,
-    FryMozzarella,
-
-    COUNT  // must be last
-}
-
-
-
 
 
 /// <summary>
@@ -186,8 +191,6 @@ public class SpeedrunTask
         IsMandatory   = isMandatory;
         MandIndex     = isMandatory ? mandIndex : -1;
     }
-    //VALIDATION:
-    public Func<SpeedrunTask,bool> Validator { get; set; }
 }
 
 
