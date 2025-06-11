@@ -119,6 +119,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &113439742
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 113439743}
+  m_Layer: 2
+  m_Name: '"Task1 Validation Space"'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &113439743
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113439742}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.1985, y: 0.666, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1135926980}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &384279403
 GameObject:
   m_ObjectHideFlags: 0
@@ -492,6 +523,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1d1210c3e998ead45ab06d1a94a12fd6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 919132148932191993}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1d1210c3e998ead45ab06d1a94a12fd6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 919132148932191994}
   m_SourcePrefab: {fileID: 100100000, guid: 1d1210c3e998ead45ab06d1a94a12fd6, type: 3}
 --- !u!114 &850631595
 MonoBehaviour:
@@ -541,6 +575,9 @@ MonoBehaviour:
       m_Calls: []
   m_SelectEntered:
     m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 919132148932191993}
         m_TargetAssemblyTypeName: InspectorTaskCompleter, Assembly-CSharp
@@ -554,21 +591,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 11500000, guid: f85b8e93d272f6a4d9a2c3313e27b8a3, type: 3}
-        m_TargetAssemblyTypeName: InspectorTaskCompleter, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  m_SelectExited:
-    m_PersistentCalls:
-      m_Calls: []
   m_FirstFocusEntered:
     m_PersistentCalls:
       m_Calls: []
@@ -793,7 +815,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.25, z: 0}
   m_LocalScale: {x: 5, y: 1.37, z: 1.44625}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 113439743}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1260968712
@@ -2019,7 +2042,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c9c6ba5862757244a579348c8191b14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  taskName: Roll dough
+  taskId: 0
+--- !u!114 &919132148932191994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148932191992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 077ea906eff3538409caf1c2839a3ac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  taskId: 0
+  validZoneCenter: {fileID: 113439743}
+  validZoneRadius: 1
+  segmentCount: 32
+  lineWidth: 0.01
 --- !u!1 &922177769482023916
 GameObject:
   m_ObjectHideFlags: 0

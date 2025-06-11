@@ -35,7 +35,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Interactables
         
         [Header("Dependencies")]
         [Tooltip("The XRGrabInteractable on the bow. Pulling only works while this is held.")]
-        [SerializeField] private XRGrabInteractable _bowGrabInteractable;
+        [SerializeField] private XRBaseInteractable _bowGrabInteractable;
 
         protected override void Awake()
         {

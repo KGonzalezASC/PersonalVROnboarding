@@ -1,55 +1,45 @@
 using UnityEngine;
-using UnityEngine.Profiling;
-using ZLinq;   // ← add this
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
+[RequireComponent(typeof(XRBaseInteractable))]
 public class InspectorTaskCompleter : MonoBehaviour
 {
-    [Tooltip("Exact Name of the SpeedrunTask to complete.")]
-    public string taskName;
+    public TaskId taskId;
 
-    // Cached lookup for the task
-    private SpeedrunTask _cachedTask;
+    XRBaseInteractable interactable;
+    ITaskValidator     _validator;
 
-    private void Start()
+    void Awake()
     {
-        var seq = TaskMarshal.Instance.Sequence;
-        if (seq == null)
-        {
-            Debug.LogWarning("No sequence set on TaskMarshal.");
-            return;
-        }
-
-        // Perform the lookup once on start
-        _cachedTask = seq.AllTasks()
-            .AsValueEnumerable()
-            .FirstOrDefault(t => t.Name == taskName);
-
-        if (_cachedTask == null)
-            Debug.LogWarning($"Task '{taskName}' not found in sequence.");
+        if (!interactable)
+            interactable = GetComponent<XRBaseInteractable>();
+        _validator ??= GetComponent<ITaskValidator>();
     }
-
+    
     public void Complete()
     {
-        if (_cachedTask == null)
+        var tm  = TaskMarshal.Instance;
+        var seq = tm.Sequence;
+        if (seq == null) { Debug.LogWarning("No sequence set."); return; }
+
+        if (!seq.TryGetTask(taskId, out var task))
         {
-            Debug.LogWarning($"Cannot complete task: '{taskName}' was not found or initialized.");
+            Debug.LogWarning($"Task '{taskId}' not found."); return;
+        }
+        if (task.IsCompleted)
+        {
+            Debug.LogWarning($"Task '{taskId}' already done."); return;
+        }
+
+        // 1) If a validator exists and it fails, block completion
+        if (_validator != null && !_validator.Validate(task, gameObject))
+        {
+            Debug.LogWarning($"Validation failed for {taskId}"); 
             return;
         }
 
-        if (!_cachedTask.IsCompleted)
-        {
-            // Add any pre‐completion validation here if needed
-            TaskMarshal.Instance.CompleteTask(_cachedTask);
-        }
-        else
-        {
-            Debug.LogWarning($"Task '{taskName}' is already completed.");
-            return;
-        }
-
-        if (_cachedTask.IsMandatory)
-        {
-            TaskMarshal.Instance.StartNextMandatory();
-        }
+        // 2) Otherwise complete and advance
+        tm.CompleteTask(task);
+        if (task.IsMandatory) tm.StartNextMandatory();
     }
 }
