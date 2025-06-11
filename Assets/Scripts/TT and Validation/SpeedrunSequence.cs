@@ -17,14 +17,16 @@ public class SpeedrunSequence
 {
     private readonly List<SpeedrunTask> _mandatoryTasks = new();
     private readonly List<SpeedrunTask> _freeTasks      = new();
+	//lookup table
+	  readonly SpeedrunTask[] _tasksById = new SpeedrunTask[(int)TaskId.COUNT];
     private int _nextMandatoryIndex;
 
 
     public bool IsRunning=false;
 
     public IReadOnlyList<SpeedrunTask> MandatoryTasks => _mandatoryTasks;
-
     public IReadOnlyList<SpeedrunTask> FreeTasks => _freeTasks;
+
     public IEnumerable<SpeedrunTask> AllTasks()
         => _mandatoryTasks.Concat(_freeTasks);
 
@@ -138,12 +140,31 @@ public class SpeedrunSequence
 }
 
 
+
+public enum TaskId
+{
+    RollDough,
+    SpreadSauce,
+    AddPepperoni,
+    PreheatOven,
+    PourDrink,
+    SetTable,
+    FryMozzarella,
+
+    COUNT  // must be last
+}
+
+
+
+
+
 /// <summary>
 /// A single speedrun task (mandatory or free), with ordering metadata.
 /// </summary>
 public class SpeedrunTask
 { 
-    public string Name { get; }
+    public TaskId Id { get; }
+    public string Name=> Id.ToString();
     public float ExpectedTime { get; } //Expected time <0 is effectively untimed
     public bool IsMandatory { get; }
 
@@ -158,13 +179,15 @@ public class SpeedrunTask
     /// <summary>True once the end time has been recorded.</summary>
     public bool IsCompleted => ActualEndTime > 0f;
 
-    public SpeedrunTask(string name, float expectedTime, bool isMandatory, int mandIndex = -1) {
-        Name           = name;
-        ExpectedTime   = expectedTime;
-        IsMandatory    = isMandatory;
-        MandIndex      = isMandatory ? mandIndex : -1;
+    public SpeedrunTask(TaskId id, float expectedTime, bool isMandatory, int mandIndex = -1)
+    {
+        Id            = id;
+        ExpectedTime  = expectedTime;
+        IsMandatory   = isMandatory;
+        MandIndex     = isMandatory ? mandIndex : -1;
     }
-    
     //VALIDATION:
     public Func<SpeedrunTask,bool> Validator { get; set; }
 }
+
+

@@ -2,13 +2,15 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using ZLinq;   // ← add this
 
-
 public class InspectorTaskCompleter : MonoBehaviour
 {
     [Tooltip("Exact Name of the SpeedrunTask to complete.")]
     public string taskName;
 
-    public void Complete()
+    // Cached lookup for the task
+    private SpeedrunTask _cachedTask;
+
+    private void Start()
     {
         var seq = TaskMarshal.Instance.Sequence;
         if (seq == null)
@@ -17,22 +19,37 @@ public class InspectorTaskCompleter : MonoBehaviour
             return;
         }
 
-
-        // Zero-allocating lookup:
-        var task = seq.AllTasks()                   // IEnumerable<SpeedrunTask>
-            .AsValueEnumerable()          // ZLinq extension
+        // Perform the lookup once on start
+        _cachedTask = seq.AllTasks()
+            .AsValueEnumerable()
             .FirstOrDefault(t => t.Name == taskName);
 
-        if (task != null && !task.IsCompleted)
-            //add validation before starting next mandatory task and if not done correctly resume timer somehow. --task mandatory index start from where you left off.
-        
-        
-            TaskMarshal.Instance.CompleteTask(task);
-        if (task != null && task.IsMandatory)
-            TaskMarshal.Instance.StartNextMandatory();
-            //start next mandatory task if it is a mandatory task
-            
+        if (_cachedTask == null)
+            Debug.LogWarning($"Task '{taskName}' not found in sequence.");
+    }
+
+    public void Complete()
+    {
+        if (_cachedTask == null)
+        {
+            Debug.LogWarning($"Cannot complete task: '{taskName}' was not found or initialized.");
+            return;
+        }
+
+        if (!_cachedTask.IsCompleted)
+        {
+            // Add any pre‐completion validation here if needed
+            TaskMarshal.Instance.CompleteTask(_cachedTask);
+        }
         else
-            Debug.LogWarning($"Task '{taskName}' not found or already completed.");
+        {
+            Debug.LogWarning($"Task '{taskName}' is already completed.");
+            return;
+        }
+
+        if (_cachedTask.IsMandatory)
+        {
+            TaskMarshal.Instance.StartNextMandatory();
+        }
     }
 }
