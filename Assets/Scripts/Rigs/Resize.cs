@@ -17,6 +17,7 @@ public class Resize : MonoBehaviour
 
     private float defaultArm = 0.584f;      //model's arm length
     public float headUnit = 10.0f;          //average head unit
+    public float stretch = 1.2f;
 
     const float upperArmRatio = 1.4f;
     const float lowerArmRatio = 1.7f;
@@ -27,14 +28,14 @@ public class Resize : MonoBehaviour
     {
         resizeAction.action.Enable();
         //resizeAction.action.performed += OnResize;
-        resizeAction.action.performed += AdjustArmLength;
+        resizeAction.action.performed += ResizeArms;
     }
 
     private void OnDestroy()
     {
         resizeAction.action.Disable();
         //resizeAction.action.performed -= OnResize;
-        resizeAction.action.performed -= AdjustArmLength;
+        resizeAction.action.performed -= ResizeArms;
     }
     
     //Resizes the avatar based on the height of the character controller
@@ -101,5 +102,21 @@ public class Resize : MonoBehaviour
         Debug.Log("Bones after: upper arm: " + upperArm.localPosition +
           ", lower arm: " + lowerArm.localPosition +
           ", hand: " + hand.localPosition);
+    }
+
+    void ApplyStretch(InputAction.CallbackContext ctx)
+    {
+        // Calculate the current distance between the hand and the controller
+        float currentDistance = Vector3.Distance(hand.position, controller.position);
+
+        // Calculate the desired distance based on the default arm length and the stretch factor
+        float desiredDistance = defaultArm * stretch;
+
+        // Calculate the stretch ratio
+        float stretchRatio = currentDistance / desiredDistance;
+
+        // Adjust the positions of the arm bones to simulate stretching
+        upperArm.position = Vector3.Lerp(shoulder.position, hand.position, 1 - stretchRatio);
+        lowerArm.position = Vector3.Lerp(upperArm.position, hand.position, 1 - stretchRatio);
     }
 }

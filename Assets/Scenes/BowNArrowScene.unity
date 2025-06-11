@@ -1155,7 +1155,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 130775637}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 759e282fbc2218643864d99078494f13, type: 3}
   m_Name: 
@@ -2750,7 +2750,7 @@ Transform:
   m_GameObject: {fileID: 559303507}
   serializedVersion: 2
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 0, z: -0.05}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2778,6 +2778,7 @@ MonoBehaviour:
   hand: {fileID: 165731593}
   middleFinger: {fileID: 929478504}
   headUnit: 0.55
+  stretch: 1.2
 --- !u!4 &568363818 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -2778786157765473455, guid: 11b7f82de99f9604bb243ef4406c7cf6, type: 3}
@@ -3159,6 +3160,7 @@ GameObject:
   m_Component:
   - component: {fileID: 878150762}
   - component: {fileID: 878150763}
+  - component: {fileID: 878150764}
   m_Layer: 0
   m_Name: IK Left Arm
   m_TagString: Untagged
@@ -3205,8 +3207,20 @@ MonoBehaviour:
     m_TargetPositionWeight: 1
     m_TargetRotationWeight: 1
     m_HintWeight: 1
-    m_MaintainTargetPositionOffset: 0
-    m_MaintainTargetRotationOffset: 0
+    m_MaintainTargetPositionOffset: 1
+    m_MaintainTargetRotationOffset: 1
+--- !u!114 &878150764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878150761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48948dfe9d76b07488dacd46a7955fa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &925442103 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4924774602955550650, guid: 97178f717bb207342b91b50d6abdf7d6, type: 3}
@@ -4297,7 +4311,7 @@ Transform:
   m_GameObject: {fileID: 1203099982}
   serializedVersion: 2
   m_LocalRotation: {x: 0.35028127, y: 0.3720525, z: -0.15410918, w: 0.84565383}
-  m_LocalPosition: {x: 0, y: 0, z: -0.05}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4325,6 +4339,7 @@ MonoBehaviour:
   hand: {fileID: 415164737}
   middleFinger: {fileID: 1271216440}
   headUnit: 0.55
+  stretch: 1.2
 --- !u!4 &1207319840 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7731431854745567883, guid: 11b7f82de99f9604bb243ef4406c7cf6, type: 3}
@@ -4399,6 +4414,7 @@ MonoBehaviour:
   hand: {fileID: 165731593}
   middleFinger: {fileID: 0}
   headUnit: 1
+  stretch: 1.2
 --- !u!1 &1262182516
 GameObject:
   m_ObjectHideFlags: 0
@@ -5201,6 +5217,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5394883903810902753, guid: 97178f717bb207342b91b50d6abdf7d6, type: 3}
   m_PrefabInstance: {fileID: 59536897}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1669704912
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.2166312
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9.428722
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
+      propertyPath: m_Name
+      value: Plug Power Armature V2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0161b956576b88045802bdbd6b5774c5, type: 3}
 --- !u!4 &1672991206 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -89941248117787657, guid: 97178f717bb207342b91b50d6abdf7d6, type: 3}
@@ -6773,3 +6846,4 @@ SceneRoots:
   - {fileID: 168113955}
   - {fileID: 1884568892}
   - {fileID: 59536897}
+  - {fileID: 1669704912}
