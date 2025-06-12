@@ -7,7 +7,7 @@ public class InspectorTaskCompleter : MonoBehaviour
     public TaskId taskId;
 
     XRBaseInteractable interactable;
-    ITaskValidator     _validator;
+    public ITaskValidator     _validator;
 
     void Awake()
     {
@@ -16,6 +16,9 @@ public class InspectorTaskCompleter : MonoBehaviour
         _validator ??= GetComponent<ITaskValidator>();
     }
     
+    /// <summary>
+    /// Complete but pass in yourself
+    /// </summary>
     public void Complete()
     {
         var tm  = TaskMarshal.Instance;
@@ -42,4 +45,33 @@ public class InspectorTaskCompleter : MonoBehaviour
         tm.CompleteTask(task);
         if (task.IsMandatory) tm.StartNextMandatory();
     }
+    
+    //Complete but pass in another object
+    public void Complete(GameObject other)
+    {
+        var tm  = TaskMarshal.Instance;
+        var seq = tm.Sequence;
+        if (seq == null) { Debug.LogWarning("No sequence set."); return; }
+
+        if (!seq.TryGetTask(taskId, out var task))
+        {
+            Debug.LogWarning($"Task '{taskId}' not found."); return;
+        }
+        if (task.IsCompleted)
+        {
+            Debug.LogWarning($"Task '{taskId}' already done."); return;
+        }
+
+        // 1) If a validator exists and it fails, block completion
+        if (_validator != null && !_validator.Validate(task, other))
+        {
+            Debug.LogWarning($"Validation failed for {taskId}"); 
+            return;
+        }
+
+        // 2) Otherwise complete and advance
+        tm.CompleteTask(task);
+        if (task.IsMandatory) tm.StartNextMandatory();
+    }
+    
 }
