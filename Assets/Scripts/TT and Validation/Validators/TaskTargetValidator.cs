@@ -18,8 +18,8 @@ public class TaskTargetValidator : MonoBehaviour, ITaskValidator
 
     public bool Validate(SpeedrunTask task, GameObject context)
     {
-        if (task.Id != taskId) 
-            return true;
+        if (task.Id != taskId)
+            return false;
 
         // Does this context match any of our listed targets?
         bool isMatch = false;
@@ -35,10 +35,11 @@ public class TaskTargetValidator : MonoBehaviour, ITaskValidator
         }
 
         if (!isMatch)
-            //debug saying not a match
-        //    Debug.LogWarning($"Task '{taskId}' failed validation: context '{context}' not a valid target.");
+        {
+            Debug.LogWarning($"Task '{taskId}' failed validation: context '{context.name}' not found in targetObjects");
             return false;
-
+            
+        }
         // If only one match needed, we succeed immediately
         if (!requireAll)
             return true;
