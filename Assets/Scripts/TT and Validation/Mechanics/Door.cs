@@ -1,16 +1,21 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class Door : MonoBehaviour
 {
     [SerializeField] Rigidbody rb;
+    [SerializeField] Rigidbody connectedRB;     //by what should the hinge rotate by
     [SerializeField] XRGrabInteractable grabInteractable;
-    [SerializeField] HingeJoint joint;
+    //[SerializeField] HingeJoint hingeJoint;
 
+    bool canRotate = false;
     public float speed = 1.0f;
     public Transform hingePoint;    //at this point, door will rotate
     float zInitial = 0.0f;
+    public const float doorWindowOffset = 0.15f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,42 +23,40 @@ public class Door : MonoBehaviour
         zInitial = this.transform.position.z;
         //To move the door like a slider 
         rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
-        //disables rotation
-        grabInteractable.trackRotation = false;
-        
+        rb.isKinematic = true;                      //just for sliding
+        rb.detectCollisions = true;
+        grabInteractable.trackRotation = false;     //disables rotation
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        //Once the distance is more than the Z sliding point
-        if(this.transform.position.z >= hingePoint.position.z)
+        //checks for the difference between every frame and sees if the difference is less than 0.01 
+        //yes, then makes the hinge joint at that point
+        if(canRotate)
         {
-            //removes the constraint
-            this.transform.position = hingePoint.position;
+            //makes the hinge and adds it the door
+            HingeJoint hingeJoint = this.AddComponent<HingeJoint>();
+            hingeJoint.anchor = new Vector3 (0, 1f, 0);
+            hingeJoint.axis = Vector3.up;
+            hingeJoint.enableCollision = true;
+            canRotate = false;
+        }
+    }
+
+    //For sliding the door
+    public void SlideDoor(SelectExitEventArgs args)
+    {
+        float distance = hingePoint.position.z - this.transform.position.z;
+        if(distance < doorWindowOffset)
+        {
+            rb.isKinematic = false;
+            grabInteractable.trackRotation = true;
+            grabInteractable.trackPosition = false;
             rb.constraints &= ~(RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY);
-            rb.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
-            grabInteractable.trackRotation = true;  //enables rotation for hinges
+            canRotate = true;
+            Debug.Log("is locked");
         }
-        /*else
-        {
-            rb.constraints |= RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
-            rb.constraints &= ~(RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ);
-
-            grabInteractable.trackRotation = false;  //disables rotation for hinges
-        }*/
-
-        //to ensure that the user cannot pull the door away from the hinge
-        if (this.transform.position.z == hingePoint.position.z)
-        {
-            this.transform.position = hingePoint.position;
-        }
-
-        //to avoid going backwards
-        if(this.transform.position.z <= zInitial)
-        {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, zInitial); 
-        }
+        Debug.Log("distance: "+ distance);
     }
 }
