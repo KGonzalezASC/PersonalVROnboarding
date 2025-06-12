@@ -1164,6 +1164,7 @@ GameObject:
   - component: {fileID: 1465452040}
   - component: {fileID: 1465452043}
   - component: {fileID: 1465452042}
+  - component: {fileID: 1465452044}
   m_Layer: 0
   m_Name: left door
   m_TagString: Untagged
@@ -1240,6 +1241,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1465452039}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &1465452044
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465452039}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0000001, y: 1, z: 1}
+  m_Center: {x: 0.0000019073486, y: 0, z: 0}
 --- !u!1 &1741466708 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -1559,10 +1581,11 @@ MonoBehaviour:
   rb: {fileID: 2125991046}
   connectedRB: {fileID: 245562607}
   grabInteractable: {fileID: 2125991045}
+  windowBox: {fileID: 1465452044}
   hingePoint: {fileID: 245562606}
   doorWindowOffset: 0.3
-  hingeMin: -180
-  hingeMax: 180
+  hingeMin: 24.29531
+  hingeMax: 294.5771
 --- !u!114 &2125991045
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,10 +13,12 @@ public class Door : MonoBehaviour
     [SerializeField] Rigidbody rb;
     [SerializeField] Rigidbody connectedRB;     //by what should the hinge rotate by
     [SerializeField] XRGrabInteractable grabInteractable;
+    [SerializeField] BoxCollider windowBox;
 
     bool canRotate = false;
     public Transform hingePoint;    //at this point, door will rotate
     public float doorWindowOffset = 0.3f;
+    float halfZSize = 1.0f;
     
     //hinge values
     public float hingeMin = -90f;
@@ -32,15 +34,19 @@ public class Door : MonoBehaviour
        // rb.isKinematic = true;                      //just for sliding
         rb.detectCollisions = true;
         grabInteractable.trackRotation = false;     //disables rotation
+        halfZSize = windowBox.size.z / 2.0f;
     }
 
     //Get the direction of where the controller is pushed from the user
-
+    public void FixedUpdate()
+    {
+    }
 
     //For sliding the door
     public void SlideDoor(SelectExitEventArgs args)
     {
-        float distance = hingePoint.position.z - this.transform.position.z;
+        float distance = hingePoint.position.z - (this.transform.position.z + halfZSize);
+        Debug.Log("hinge point: " + hingePoint.position + ", distance: " + distance+", box: " + transform.position.z + halfZSize);
         if(distance < doorWindowOffset)
         {
             rb.isKinematic = false;
@@ -49,9 +55,7 @@ public class Door : MonoBehaviour
             rb.constraints &= ~(RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY);
 
             CreateHinge();
-            Debug.Log("is locked");
         }
-        Debug.Log("distance: "+ distance);
     }
 
     //To get the user's controller's direction
@@ -61,7 +65,7 @@ public class Door : MonoBehaviour
     }
 
     /// <summary>
-    /// Destroys hinge from the gameobject
+    /// Destroys it from the gameobject
     /// </summary>
     void RemoveHinge()
     {
@@ -89,6 +93,7 @@ public class Door : MonoBehaviour
             jointLimits.min = hingeMin;
             jointLimits.max = hingeMax;
             hingeJoint.useLimits = true;
+            hingeJoint.extendedLimits = true;
             hingeJoint.limits = jointLimits;
         }
     }
