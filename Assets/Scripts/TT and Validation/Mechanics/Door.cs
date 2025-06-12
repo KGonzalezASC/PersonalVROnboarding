@@ -3,46 +3,39 @@ using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class Door : MonoBehaviour
 {
+    private enum DoorState { Sliding, Hinged}
+    private DoorState currentState = DoorState.Sliding;
+
     [SerializeField] Rigidbody rb;
     [SerializeField] Rigidbody connectedRB;     //by what should the hinge rotate by
     [SerializeField] XRGrabInteractable grabInteractable;
-    //[SerializeField] HingeJoint hingeJoint;
 
     bool canRotate = false;
-    public float speed = 1.0f;
     public Transform hingePoint;    //at this point, door will rotate
-    float zInitial = 0.0f;
-    public const float doorWindowOffset = 0.15f;
+    public float doorWindowOffset = 0.3f;
+    
+    //hinge values
+    public float hingeMin = -90f;
+    public float hingeMax = 180f;
+
+    private IXRSelectInteractor currentInteractor;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        zInitial = this.transform.position.z;
         //To move the door like a slider 
         rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
-        rb.isKinematic = true;                      //just for sliding
+       // rb.isKinematic = true;                      //just for sliding
         rb.detectCollisions = true;
         grabInteractable.trackRotation = false;     //disables rotation
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        //checks for the difference between every frame and sees if the difference is less than 0.01 
-        //yes, then makes the hinge joint at that point
-        if(canRotate)
-        {
-            //makes the hinge and adds it the door
-            HingeJoint hingeJoint = this.AddComponent<HingeJoint>();
-            hingeJoint.anchor = new Vector3 (0, 1f, 0);
-            hingeJoint.axis = Vector3.up;
-            hingeJoint.enableCollision = true;
-            canRotate = false;
-        }
-    }
+    //Get the direction of where the controller is pushed from the user
+
 
     //For sliding the door
     public void SlideDoor(SelectExitEventArgs args)
@@ -54,9 +47,49 @@ public class Door : MonoBehaviour
             grabInteractable.trackRotation = true;
             grabInteractable.trackPosition = false;
             rb.constraints &= ~(RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY);
-            canRotate = true;
+
+            CreateHinge();
             Debug.Log("is locked");
         }
         Debug.Log("distance: "+ distance);
+    }
+
+    //To get the user's controller's direction
+    public void OnGrab(SelectEnterEvent args)
+    {
+        ///currentInteractor = args.
+    }
+
+    /// <summary>
+    /// Destroys hinge from the gameobject
+    /// </summary>
+    void RemoveHinge()
+    {
+        HingeJoint hinge = GetComponent<HingeJoint>();
+        if(hinge != null)
+        {
+            Destroy(GetComponent<HingeJoint>());
+        }
+    }
+
+    /// <summary>
+    /// To ensure that the hinge is created just once
+    /// </summary>
+    void CreateHinge()
+    {
+        if (!TryGetComponent<HingeJoint>(out _))
+        {
+            HingeJoint hingeJoint = gameObject.AddComponent<HingeJoint>();
+            hingeJoint.connectedBody = connectedRB;
+            hingeJoint.anchor = new Vector3(0, 1f, 0);
+            hingeJoint.axis = Vector3.up;
+            hingeJoint.enableCollision = true;
+
+            JointLimits jointLimits = hingeJoint.limits;
+            jointLimits.min = hingeMin;
+            jointLimits.max = hingeMax;
+            hingeJoint.useLimits = true;
+            hingeJoint.limits = jointLimits;
+        }
     }
 }
