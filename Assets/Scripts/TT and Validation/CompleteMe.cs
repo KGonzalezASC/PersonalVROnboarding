@@ -47,31 +47,32 @@ public class InspectorTaskCompleter : MonoBehaviour
     }
     
     //Complete but pass in another object
-    public void Complete(GameObject other)
+    public bool Complete(GameObject other)
     {
         var tm  = TaskMarshal.Instance;
         var seq = tm.Sequence;
-        if (seq == null) { Debug.LogWarning("No sequence set."); return; }
+        if (seq == null) { Debug.LogWarning("No sequence set."); return false; }
 
         if (!seq.TryGetTask(taskId, out var task))
         {
-            Debug.LogWarning($"Task '{taskId}' not found."); return;
+            Debug.LogWarning($"Task '{taskId}' not found."); return false;
         }
         if (task.IsCompleted)
         {
-            Debug.LogWarning($"Task '{taskId}' already done."); return;
+            Debug.LogWarning($"Task '{taskId}' already done."); return false;
         }
 
         // 1) If a validator exists and it fails, block completion
         if (_validator != null && !_validator.Validate(task, other))
         {
             Debug.LogWarning($"Validation failed for {taskId}"); 
-            return;
+            return false;
         }
 
         // 2) Otherwise complete and advance
         tm.CompleteTask(task);
         if (task.IsMandatory) tm.StartNextMandatory();
+        return true;
     }
     
 }

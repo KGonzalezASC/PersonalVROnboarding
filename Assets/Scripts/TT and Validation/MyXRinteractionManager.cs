@@ -38,7 +38,7 @@ public class CustomInteractionManager : XRInteractionManager
         base.SelectEnter(interactor, interactable, args);
     }
 
-    private bool IsControllerInteractor(IXRSelectInteractor interactor)
+    public static bool IsControllerInteractor(IXRSelectInteractor interactor)
     {
         // Option 1: Check for Near-Far Interactor specifically
         if (interactor is NearFarInteractor)
@@ -55,5 +55,4 @@ public class CustomInteractionManager : XRInteractionManager
 
         return false;
     }
-    
 }

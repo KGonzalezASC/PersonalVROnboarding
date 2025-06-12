@@ -16,7 +16,7 @@ using UnityEngine;
 
 public enum TaskId
 {
-    RollDough,
+    VerifyStackID,
     SpreadSauce,
     AddPepperoni,
     PreheatOven,
@@ -82,7 +82,7 @@ public class SpeedrunSequence
         var seq = new SpeedrunSequence();
 
         // Mandatory steps (will have MandIndex 0,1,2...)
-        seq.AddMandatory(TaskId.RollDough, 60f);
+        seq.AddMandatory(TaskId.VerifyStackID, 60f);
         seq.AddMandatory(TaskId.SpreadSauce, 30f);
         seq.AddMandatory(TaskId.AddPepperoni, 20f);
 

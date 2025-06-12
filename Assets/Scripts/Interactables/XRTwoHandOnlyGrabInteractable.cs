@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -6,6 +7,20 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class TwoHandOnlyGrabInteractable : XRGrabInteractable
 {
+    [SerializeField]
+    private bool isHeavy = false;
+   
+    [Header("Beneath-Check (optional)")]
+    [Tooltip("Enable/disable raycasting downwards to report what's beneath.")]
+    [SerializeField] private bool enableBeneathCheck = false;
+    [SerializeField, Tooltip("How far down to check for a hit beneath the interactable")]
+    private float beneathRayDistance = 1.0f;
+    [SerializeField, Tooltip("Which layers to include when checking beneath")]
+    private LayerMask beneathRayMask = ~0;
+    
+    private float _initialY;
+    private const float k_HeavyMassThreshold = 25f;
+    
     protected override void Awake()
     {
         // Ensure an InteractionManager exists
@@ -18,6 +33,7 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
 
         // Allow more than one interactor
         selectMode = InteractableSelectMode.Multiple;
+        _initialY = transform.position.y;
     }
 
 /// <summary>
@@ -44,7 +60,19 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
         {
             return;
         }
-
+        
+        /*
+        if (isHeavy && enableBeneathCheck && Physics.Raycast(transform.position, Vector3.down, out var earlyfloorhit,
+                beneathRayDistance, beneathRayMask))
+        {
+            Debug.Log($"Already on the floor dont bother");
+            base.ProcessInteractable(phase);
+            return;
+        }
+        */
+        
+        
+        
         // 3) Exactly two hands → override completely with our midpoint AND snapping logic.
         //    We never call base.ProcessInteractable here, because we want to bypass
         //    all built-in one-hand grab behavior and physics state changes.
@@ -54,10 +82,39 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
             // Compute midpoint between the two hand‐parent positions:
             Vector3 a = interactorsSelecting[0].transform.parent.position;
             Vector3 b = interactorsSelecting[1].transform.parent.position;
-            transform.position = (a + b) * 0.5f;
-
+            Vector3 mid = (a + b) * 0.5f;
+            if (isHeavy)
+                mid.y = _initialY;
+            transform.position = mid;
             // (You can adjust rotation however you like; here we lock it to world‐forward ↑)
             transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            
+            if (enableBeneathCheck)
+            {
+                if (Physics.Raycast(transform.position, Vector3.down, out var hit, beneathRayDistance, beneathRayMask))
+                {
+                    Debug.Log($"[{name}] Beneath interactable: {hit.collider.gameObject.name}");
+                    if (HeavyFall(hit))
+                    {
+                        for (var index = interactorsSelecting.Count - 1; index >= 0; index--)
+                        {
+                            var inter = interactorsSelecting[index];
+                            //make them let go:
+                            interactionManager.SelectExit(inter, this);
+                            if (inter is XRBaseInteractor baseInteractor)
+                            {
+                                baseInteractor.enabled = false;
+                                baseInteractor.enabled = true;
+                            }
+                        }
+
+                        base.ProcessInteractable(phase);
+                        return;
+                    }
+                }
+                
+            }
+            
         }
 
         // Now manually snap each controller’s root to its chosen attach point:
@@ -68,19 +125,18 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
                                   ? secondaryAttachTransform.position 
                                   : transform.position;
 
-        for (int i = 0; i < interactorsSelecting.Count; ++i)
+        foreach (var t in interactorsSelecting)
         {
             // Cast to IXRSelectInteractor to read handedness
-            var inter = interactorsSelecting[i] as IXRSelectInteractor;
+            var inter = t;
             if (inter == null)
                 continue;
 
             bool isRight = (inter.handedness == InteractorHandedness.Right);
             Vector3 targetPos = isRight ? worldSecondary : worldPrimary;
-
             // Move the controller’s parent so the controller appears at the attach point
             var controllerRoot = inter.transform.parent;
-            if (controllerRoot != null)
+            if (controllerRoot)
                 controllerRoot.position = targetPos;
         }
     }
@@ -90,8 +146,7 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
     public override Transform GetAttachTransform(IXRInteractor interactor)
     {
         // Try to get the IXRSelectInteractor so we can read its handedness
-        var selectInteractor = interactor as IXRSelectInteractor;
-        var hand = selectInteractor != null
+        var hand = interactor is IXRSelectInteractor selectInteractor
             ? selectInteractor.handedness
             : InteractorHandedness.None;
 
@@ -143,34 +198,13 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
                 Gizmos.DrawLine(a, b);
             }
     }
-
     
 
-    /*protected override void OnSelectEntered(SelectEnterEventArgs args)
+    private bool HeavyFall(RaycastHit hit)
     {
-        base.OnSelectEntered(args);
-
-        if (interactorsSelecting.Count == 1)
-        {
-            // First hand grabbed—lock transform in place if you like
-            // TODO: e.g. disable movement or provide haptic feedback
-        }
-        else if (interactorsSelecting.Count == 2)
-        {
-            // Second hand grabbed—now “activate” the two-hand grab
-            // TODO: e.g. unfreeze object, enable force application, etc.
-        }
+        return TryGetComponent<Rigidbody>(out var rb)
+               && rb.mass > k_HeavyMassThreshold
+               && hit.collider.gameObject.name == "Floor";
     }
-    
-    */
-    
 
-    /*
-    protected override void OnSelectExited(SelectExitEventArgs args)
-    {
-        // Let XRGrabInteractable restore its internal state (colliders, Rigidbody)
-        base.OnSelectExited(args);
-    }
-    */
-    
 }

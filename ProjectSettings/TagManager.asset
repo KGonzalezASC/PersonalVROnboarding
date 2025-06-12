@@ -8,11 +8,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Bow
+  - NoCollision_PlayerXR
   - Water
   - UI
   - PP
-  - Arrow
+  - LabEquipment
   - Player
   - EnemyT
   - Overlay UI
