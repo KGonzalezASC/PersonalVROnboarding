@@ -44,7 +44,7 @@ public sealed class StackMover : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (taskCompleter.taskId == TaskId.SpreadSauce)
+        if (taskCompleter.taskId == TaskId.StackToCart)
         {
              taskCompleter.Complete(other.gameObject); 
         }

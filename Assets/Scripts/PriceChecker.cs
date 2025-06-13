@@ -29,6 +29,9 @@ public class PriceChecker : MonoBehaviour
     private bool  _beamActive;
     private float _beamLength;
     private float _beamDeactivateTime;
+    private bool _hasDefectBeenIdentified;
+    
+    
     [SerializeField]
     private StackErrors forcedDefect;
     
@@ -43,7 +46,7 @@ public class PriceChecker : MonoBehaviour
         _line.startWidth    = startWidth;
         _line.endWidth      = endWidth;
         _line.enabled       = false;
-        forcedDefect = default(StackErrors).RandomValue();
+        forcedDefect = default(StackErrors).RandomValue(); //might not be used
     }
 
     /// <summary>
@@ -52,7 +55,7 @@ public class PriceChecker : MonoBehaviour
     /// </summary>
     public void Fire()
     {
-        if (scanPoint == null)
+        if (!scanPoint)
         {
             Debug.LogWarning($"{name}: No scanPoint assigned.");
             return;
@@ -69,6 +72,15 @@ public class PriceChecker : MonoBehaviour
             if (taskCompleter.taskId == TaskMarshal.Instance.Sequence.MandatoryProgression)
             {
                 taskCompleter.Complete(hit.collider.gameObject);
+                TaskMarshal.Instance.Print($"Defect Found: Grab a new battery and redo the steps");
+                if (_hasDefectBeenIdentified == false)
+                {
+                    TaskMarshal.Instance.Sequence.ResetSequence();
+                    _hasDefectBeenIdentified = true;
+                }
+                //print out next task
+                TaskMarshal.Instance.Print($"I am now on and can access{TaskMarshal.Instance.Sequence.MandatoryProgression}");
+                
             }
         }
         else
