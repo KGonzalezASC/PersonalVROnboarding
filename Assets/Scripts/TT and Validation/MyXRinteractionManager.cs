@@ -15,7 +15,7 @@ public class CustomInteractionManager : XRInteractionManager
         // Check if it's a Near-Far Interactor (controller)
         if (IsControllerInteractor(interactor))
         {
-            Debug.Log($"[Controller SelectEnter] interactor={interactor} interactable={interactable}");
+            //Debug.Log($"[Controller SelectEnter] interactor={interactor} interactable={interactable}");
             MyXRInteractionEvents.RaiseSelectForATask(interactor, interactable);
         }
         

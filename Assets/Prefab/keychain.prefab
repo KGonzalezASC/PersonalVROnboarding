@@ -166,12 +166,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1d1210c3e998ead45ab06d1a94a12fd6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1856849977697442882}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1d1210c3e998ead45ab06d1a94a12fd6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1659469202598257201}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1d1210c3e998ead45ab06d1a94a12fd6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3293166156372631606}
   m_SourcePrefab: {fileID: 100100000, guid: 1d1210c3e998ead45ab06d1a94a12fd6, type: 3}
 --- !u!4 &8124612597447247432 stripped
 Transform:
@@ -283,7 +277,7 @@ MonoBehaviour:
   m_SelectExited:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1659469202598257201}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InspectorTaskCompleter, Assembly-CSharp
         m_MethodName: Complete
         m_Mode: 1
@@ -390,33 +384,3 @@ MonoBehaviour:
   m_MinimumScaleRatio: 0.01
   m_MaximumScaleRatio: 1
   m_ScaleMultiplier: 0.1
---- !u!114 &1659469202598257201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8902416552967642354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c9c6ba5862757244a579348c8191b14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  taskId: 0
---- !u!114 &3293166156372631606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8902416552967642354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 077ea906eff3538409caf1c2839a3ac8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  taskId: 0
-  validZoneCenter: {fileID: 0}
-  validZoneRadius: 1
-  segmentCount: 32
-  lineWidth: 0.01

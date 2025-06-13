@@ -34,7 +34,6 @@ public class LvlOneTsk1Helper : MonoBehaviour
             arg2.selectExited.AddListener(RemoveFromHashset);
         }
         TaskMarshal.Instance.Print(line: $"After: Currently held objects: {_currentlyHeldObjects.Count}");
-
         if (_currentlyHeldObjects.Count >= 2)
         {
             string heldObjects = string.Join(", ",
@@ -53,14 +52,11 @@ public class LvlOneTsk1Helper : MonoBehaviour
             TaskMarshal.Instance.Print($"Ignoring non-controller release from: {args.interactorObject.GetType().Name} - keeping in hashset");
             return;
         }
-
         var releasedGameObject = args.interactableObject.transform.gameObject;
         bool wasRemoved = _currentlyHeldObjects.Remove(releasedGameObject);
-    
         TaskMarshal.Instance.Print(args.interactorObject.transform.gameObject.name);
         TaskMarshal.Instance.Print(line: $"Released: {releasedGameObject.name}, was removed: {wasRemoved}");
         TaskMarshal.Instance.Print(line: $"Currently held objects: {_currentlyHeldObjects.Count}");
-    
         // Remove the listener
         args.interactableObject.selectExited.RemoveListener(RemoveFromHashset);
     }

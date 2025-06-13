@@ -45,6 +45,6 @@ public class TaskTargetValidator : MonoBehaviour, ITaskValidator
             return true;
 
         // Otherwise, we need to see each target at least once
-        return _seen.Count >= targetObjects.Length;
+        return _seen.Count >= targetObjects.Length; //this means in helpers that call complete i need to communicate if you have to repeat to get all or run validate multiple times if i need to batch an action
     }
 }

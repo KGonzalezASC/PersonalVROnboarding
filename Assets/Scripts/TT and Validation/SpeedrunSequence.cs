@@ -17,13 +17,13 @@ using UnityEngine;
 public enum TaskId
 {
     VerifyStackID,
-    SpreadSauce,
-    AddPepperoni,
-    PreheatOven,
+    DefectiveCheck,
+    StackToCart,
+    BleedResistor,
+    RemoveTape,
     PourDrink,
     SetTable,
     FryMozzarella,
-
     COUNT  // must be last
 }
 
@@ -36,6 +36,19 @@ public class SpeedrunSequence
 	//lookup table
 	  readonly SpeedrunTask[] _tasksById = new SpeedrunTask[(int)TaskId.COUNT];
     private int _nextMandatoryIndex;
+    
+    //need a BACKING STRUCTURE ON RESET: store total time and timeslices before making people redo the whole thing.
+    
+    public TaskId MandatoryProgression
+    {
+        get
+        {
+            if (_nextMandatoryIndex < _mandatoryTasks.Count)
+                return _mandatoryTasks[_nextMandatoryIndex].Id;
+            // No more mandatory tasks
+            return default;
+        }
+    }
 
 
     public bool IsRunning=false;
@@ -83,11 +96,12 @@ public class SpeedrunSequence
 
         // Mandatory steps (will have MandIndex 0,1,2...)
         seq.AddMandatory(TaskId.VerifyStackID, 60f);
-        seq.AddMandatory(TaskId.SpreadSauce, 30f);
-        seq.AddMandatory(TaskId.AddPepperoni, 20f);
+        seq.AddMandatory(TaskId.DefectiveCheck, 30f);
+        seq.AddMandatory(TaskId.StackToCart, 20f);
+        seq.AddMandatory(TaskId.BleedResistor, 120f);
 
         // Free tasks (MandIndex = -1 automatically)
-        seq.AddFree(TaskId.PreheatOven, 45f);
+        seq.AddFree(TaskId.RemoveTape, 45f);
         seq.AddFree(TaskId.PourDrink, 15f);
         seq.AddFree(TaskId.SetTable, -1f);
         seq.AddFree(TaskId.FryMozzarella, 90f);
@@ -151,7 +165,7 @@ public class SpeedrunSequence
         // Reset mandatory pointer
         _nextMandatoryIndex = 0;
 
-        // Clear all timing data
+        // Clear all timing data but not overall time.
         foreach (var t in AllTasks())
         {
             t.ActualStartTime = 0f;
