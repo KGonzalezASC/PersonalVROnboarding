@@ -20,11 +20,8 @@ public class TwoHandOnlyGrabInteractable : XRGrabInteractable
 
     protected override void Awake()
     {
-        if (interactionManager == null)
+        if (!interactionManager)
             interactionManager = FindObjectOfType<XRInteractionManager>();
-        if (interactionManager == null)
-            Debug.LogError($"[{name}] needs an XRInteractionManager in the scene!", this);
-
         base.Awake();
         selectMode = InteractableSelectMode.Multiple;
         _initialY = transform.position.y;
