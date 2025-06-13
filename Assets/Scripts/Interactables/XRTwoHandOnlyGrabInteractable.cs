@@ -1,210 +1,181 @@
-using System.Linq;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-
 public class TwoHandOnlyGrabInteractable : XRGrabInteractable
 {
-    [SerializeField]
-    private bool isHeavy = false;
-   
+    [SerializeField] private bool isHeavy = false;
+
     [Header("Beneath-Check (optional)")]
-    [Tooltip("Enable/disable raycasting downwards to report what's beneath.")]
-    [SerializeField] private bool enableBeneathCheck = false;
+    [SerializeField, Tooltip("Enable/disable raycasting downwards to report what's beneath.")]
+    private bool enableBeneathCheck = false;
     [SerializeField, Tooltip("How far down to check for a hit beneath the interactable")]
     private float beneathRayDistance = 1.0f;
     [SerializeField, Tooltip("Which layers to include when checking beneath")]
     private LayerMask beneathRayMask = ~0;
-    
+
     private float _initialY;
     private const float k_HeavyMassThreshold = 25f;
-    
+
     protected override void Awake()
     {
-        // Ensure an InteractionManager exists
         if (interactionManager == null)
             interactionManager = FindObjectOfType<XRInteractionManager>();
         if (interactionManager == null)
             Debug.LogError($"[{name}] needs an XRInteractionManager in the scene!", this);
 
         base.Awake();
-
-        // Allow more than one interactor
         selectMode = InteractableSelectMode.Multiple;
         _initialY = transform.position.y;
     }
 
-/// <summary>
-    /// Only process the built-in XRGrabInteractable logic when there are zero hands.
-    /// Ignore one-hand touches entirely (force a release).
-    /// If there are exactly two hands, run our custom two-hand logic.
-    /// </summary>
     public override void ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase phase)
     {
         int count = interactorsSelecting.Count;
 
-        // 1) Zero hands → fall back to normal (so that you can start grabbing with one hand)
-        //    That allows the object to enter the grabbed state if a hand touches it.
+        // 1) Zero hands → default
         if (count == 0)
         {
             base.ProcessInteractable(phase);
             return;
         }
 
-        // 2) Exactly one hand → do NOTHING.  
-        //    By NOT calling base.ProcessInteractable, we force the object to drop (run its release cleanup)
-        //    as soon as that second hand disappears.  
+        // 2) One hand → force‐release
         if (count == 1)
-        {
             return;
-        }
-        
-        /*
-        if (isHeavy && enableBeneathCheck && Physics.Raycast(transform.position, Vector3.down, out var earlyfloorhit,
-                beneathRayDistance, beneathRayMask))
-        {
-            Debug.Log($"Already on the floor dont bother");
-            base.ProcessInteractable(phase);
-            return;
-        }
-        */
-        
-        
-        
-        // 3) Exactly two hands → override completely with our midpoint AND snapping logic.
-        //    We never call base.ProcessInteractable here, because we want to bypass
-        //    all built-in one-hand grab behavior and physics state changes.
 
+        // 3) Two hands in Dynamic → check “heavy fall” first
         if (phase == XRInteractionUpdateOrder.UpdatePhase.Dynamic)
         {
-            // Compute midpoint between the two hand‐parent positions:
-            Vector3 a = interactorsSelecting[0].transform.parent.position;
-            Vector3 b = interactorsSelecting[1].transform.parent.position;
-            Vector3 mid = (a + b) * 0.5f;
-            if (isHeavy)
-                mid.y = _initialY;
-            transform.position = mid;
-            // (You can adjust rotation however you like; here we lock it to world‐forward ↑)
-            transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            
-            if (enableBeneathCheck)
-            {
-                if (Physics.Raycast(transform.position, Vector3.down, out var hit, beneathRayDistance, beneathRayMask))
-                {
-                    Debug.Log($"[{name}] Beneath interactable: {hit.collider.gameObject.name}");
-                    if (HeavyFall(hit))
-                    {
-                        for (var index = interactorsSelecting.Count - 1; index >= 0; index--)
-                        {
-                            var inter = interactorsSelecting[index];
-                            //make them let go:
-                            interactionManager.SelectExit(inter, this);
-                            if (inter is XRBaseInteractor baseInteractor)
-                            {
-                                baseInteractor.enabled = false;
-                                baseInteractor.enabled = true;
-                            }
-                        }
-
-                        base.ProcessInteractable(phase);
-                        return;
-                    }
-                }
-                
-            }
-            
-        }
-
-        // Now manually snap each controller’s root to its chosen attach point:
-        Vector3 worldPrimary   = (attachTransform != null) 
-                                  ? attachTransform.position 
-                                  : transform.position;
-        Vector3 worldSecondary = (secondaryAttachTransform != null) 
-                                  ? secondaryAttachTransform.position 
-                                  : transform.position;
-
-        foreach (var t in interactorsSelecting)
-        {
-            // Cast to IXRSelectInteractor to read handedness
-            var inter = t;
-            if (inter == null)
-                continue;
-
-            bool isRight = (inter.handedness == InteractorHandedness.Right);
-            Vector3 targetPos = isRight ? worldSecondary : worldPrimary;
-            // Move the controller’s parent so the controller appears at the attach point
-            var controllerRoot = inter.transform.parent;
-            if (controllerRoot)
-                controllerRoot.position = targetPos;
-        }
-    }
-    
-
-
-    public override Transform GetAttachTransform(IXRInteractor interactor)
-    {
-        // Try to get the IXRSelectInteractor so we can read its handedness
-        var hand = interactor is IXRSelectInteractor selectInteractor
-            ? selectInteractor.handedness
-            : InteractorHandedness.None;
-
-        // Choose by handedness: left = primary, right = secondary
-        Transform chosen;
-        if (hand == InteractorHandedness.Right && secondaryAttachTransform != null)
-        {
-            chosen = secondaryAttachTransform;
-        }
-        else
-        {
-            chosen = attachTransform != null 
-                ? attachTransform 
-                : base.GetAttachTransform(interactor);
-        }
-        
-        //i need to 
-
-        // Log it out
-        /*string which = (chosen == secondaryAttachTransform) 
-            ? "Secondary" 
-            : "Primary";
-        Debug.Log($"{gameObject.name}: {hand} hand → {which} AttachPoint ({chosen.name})");*/
-
-        return chosen;
-    }
-    
-    void OnDrawGizmos()
-    {
-            if (!Application.isPlaying)
+            if (HeavyIsOnFloor())
                 return;
 
-            foreach (var inter in interactorsSelecting)
-            {
-                // This is the controller GameObject’s world position
-                Vector3 controllerPos = inter.transform.position;
-                Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(controllerPos, 0.01f);
-            }
+            // a) Two‐hand midpoint & optional height lock
+            ApplyTwoHandTransform();
 
-            // Now draw your midpoint for comparison
-            if (interactorsSelecting.Count == 2)
-            {
-                var a = interactorsSelecting[0].transform.position;
-                var b = interactorsSelecting[1].transform.position;
-                var mid = (a + b) * 0.5f;
-                Gizmos.color = Color.green;
-                Gizmos.DrawSphere(mid, 0.02f);
-                Gizmos.DrawLine(a, b);
-            }
+            // b) Post‐move beneath‐check
+            if (enableBeneathCheck && DidHeavyFall())
+                return;
+        }
+
+        // 4) Finally, snap controllers to their attach points
+        SnapControllersToAttach();
     }
-    
+
+    /// <summary>
+    /// Returns true if we did an early heavy‐fall release, already called base.ProcessInteractable.
+    /// </summary>
+    private bool HeavyIsOnFloor()
+    {
+        if (isHeavy && enableBeneathCheck
+            && Physics.Raycast(transform.position, Vector3.down, out var hit, beneathRayDistance, beneathRayMask)
+            && HeavyFall(hit))
+        {
+            Debug.Log($"[{name}] Already on the floor—dropping.");
+            base.ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase.Dynamic);
+            ReleaseAllInteractors();
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// After moving, do the same check one more time.
+    /// Returns true if we released and called base.ProcessInteractable.
+    /// </summary>
+    private bool DidHeavyFall()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out var hit, beneathRayDistance, beneathRayMask)
+            && HeavyFall(hit))
+        {
+            ReleaseAllInteractors();
+            base.ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase.Dynamic);
+            return true;
+        }
+        return false;
+    }
+
+    private void ApplyTwoHandTransform()
+    {
+        var a = interactorsSelecting[0].transform.parent.position;
+        var b = interactorsSelecting[1].transform.parent.position;
+        var mid = (a + b) * 0.5f;
+        if (isHeavy) mid.y = _initialY;
+        transform.position = mid;
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+    }
+
+    private void SnapControllersToAttach()
+    {
+        Vector3 worldPrimary = attachTransform    != null ? attachTransform.position    : transform.position;
+        Vector3 worldSecondary = secondaryAttachTransform != null ? secondaryAttachTransform.position : transform.position;
+
+        // walk backwards if you need to remove during iteration
+        foreach (var inter in interactorsSelecting)
+        {
+            if (inter == null) continue;
+            bool right = inter.handedness == InteractorHandedness.Right;
+            Vector3 target = right ? worldSecondary : worldPrimary;
+            inter.transform.parent?.SetPositionAndRotation(target, inter.transform.parent.rotation);
+        }
+    }
+
+    private void ReleaseAllInteractors()
+    {
+        for (int i = interactorsSelecting.Count - 1; i >= 0; i--)
+        {
+            var inter = interactorsSelecting[i];
+            interactionManager.SelectExit(inter, this);
+
+            if (inter is XRBaseInteractor xrBase)
+            {
+                // disable/re-enable so it truly drops and won’t snap back
+                xrBase.enabled = false;
+                xrBase.enabled = true;
+            }
+        }
+    }
 
     private bool HeavyFall(RaycastHit hit)
     {
         return TryGetComponent<Rigidbody>(out var rb)
-               && rb.mass > k_HeavyMassThreshold
-               && hit.collider.gameObject.name == "Floor";
+            && rb.mass > k_HeavyMassThreshold
+            && hit.collider.gameObject.name == "Floor";
     }
 
+    public override Transform GetAttachTransform(IXRInteractor interactor)
+    {
+        var hand = interactor is IXRSelectInteractor sel
+            ? sel.handedness
+            : InteractorHandedness.None;
+
+        if (hand == InteractorHandedness.Right && secondaryAttachTransform != null)
+            return secondaryAttachTransform;
+
+        return attachTransform != null
+            ? attachTransform
+            : base.GetAttachTransform(interactor);
+    }
+
+    /*void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+
+        foreach (var inter in interactorsSelecting)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(inter.transform.position, 0.01f);
+        }
+
+        if (interactorsSelecting.Count == 2)
+        {
+            var a = interactorsSelecting[0].transform.position;
+            var b = interactorsSelecting[1].transform.position;
+            var mid = (a + b) * 0.5f;
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(mid, 0.02f);
+            Gizmos.DrawLine(a, b);
+        }
+    }*/
 }

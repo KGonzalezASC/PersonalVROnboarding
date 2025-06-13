@@ -36,6 +36,17 @@ public class SpeedrunSequence
 	//lookup table
 	  readonly SpeedrunTask[] _tasksById = new SpeedrunTask[(int)TaskId.COUNT];
     private int _nextMandatoryIndex;
+    
+    public TaskId MandatoryProgression
+    {
+        get
+        {
+            if (_nextMandatoryIndex < _mandatoryTasks.Count)
+                return _mandatoryTasks[_nextMandatoryIndex].Id;
+            // No more mandatory tasks
+            return default;
+        }
+    }
 
 
     public bool IsRunning=false;

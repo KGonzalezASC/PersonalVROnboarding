@@ -51,9 +51,51 @@ public class ProximityTaskValidator : MonoBehaviour, ITaskValidator
 
     public bool Validate(SpeedrunTask task, GameObject context)
     {
+        // 1) Log the incoming parameters
+        Debug.Log($"[ProximityValidator] Validating Task.Id={task.Id}, expected={taskId}; Context='{context.name}' at {context.transform.position}");
+
+        // 2) If this isn’t the task we care about, short-circuit to “passed”
+        if (task.Id != taskId)
+        {
+            Debug.Log("[ProximityValidator] Task ID mismatch → automatically passing.");
+            return true;
+        }
+
+        // 3) Grab positions
+        Vector3 ctxPos = context.transform.position;
+        Vector3 zonePos = validZoneCenter.position;
+
+        // 4) Compute deltas
+        float dx = ctxPos.x - zonePos.x;
+        float dy = ctxPos.y - zonePos.y;
+        float dz = ctxPos.z - zonePos.z;
+        Debug.Log($"[ProximityValidator] Δ = ({dx:F3}, {dy:F3}, {dz:F3})");
+
+        // 5) Compute straight-line distance (with an explicit sqrt)
+        float dist = Mathf.Sqrt(dx * dx + dy * dy + dz * dz);
+        Debug.Log($"[ProximityValidator] Distance = {dist:F3}, Radius = {validZoneRadius}");
+
+        // 6) Compare and log result
+        if (dist <= validZoneRadius)
+        {
+            Debug.Log("[ProximityValidator] Within radius → PASS");
+            return true;
+        }
+        else
+        {
+            Debug.Log("[ProximityValidator] Outside radius → FAIL");
+            return false;
+        }
+    }
+    
+    //optimized without prints
+    /*public bool Validate(SpeedrunTask task, GameObject context)
+    {
         if (task.Id != taskId) return true;
+        Debug.Log($"ProximityValidator checking {context.name} at position {context.transform.position}");
         return Vector3.Distance(context.transform.position,
                    validZoneCenter.position)
                <= validZoneRadius;
-    }
+    }*/
+
 }
