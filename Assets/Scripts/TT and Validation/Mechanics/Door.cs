@@ -1,59 +1,100 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class Door : MonoBehaviour
 {
-    [SerializeField] Rigidbody rb;
-    [SerializeField] XRGrabInteractable grabInteractable;
-    [SerializeField] HingeJoint joint;
+    private enum DoorState { Sliding, Hinged}
+    private DoorState currentState = DoorState.Sliding;
 
-    public float speed = 1.0f;
+    [SerializeField] Rigidbody rb;
+    [SerializeField] Rigidbody connectedRB;     //by what should the hinge rotate by
+    [SerializeField] XRGrabInteractable grabInteractable;
+    [SerializeField] BoxCollider windowBox;
+
+    bool canRotate = false;
     public Transform hingePoint;    //at this point, door will rotate
-    float zInitial = 0.0f;
+    public float doorWindowOffset = 0.3f;
+    float halfZSize = 1.0f;
+    
+    //hinge values
+    public float hingeMin = -90f;
+    public float hingeMax = 180f;
+
+    private IXRSelectInteractor currentInteractor;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        zInitial = this.transform.position.z;
         //To move the door like a slider 
         rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
-        //disables rotation
-        grabInteractable.trackRotation = false;
-        
+       // rb.isKinematic = true;                      //just for sliding
+        rb.detectCollisions = true;
+        grabInteractable.trackRotation = false;     //disables rotation
+        halfZSize = windowBox.size.z / 2.0f;
     }
 
-    // Update is called once per frame
-    void Update()
+    //Get the direction of where the controller is pushed from the user
+    public void FixedUpdate()
     {
-        //Once the distance is more than the Z sliding point
-        if(this.transform.position.z >= hingePoint.position.z)
+    }
+
+    //For sliding the door
+    public void SlideDoor(SelectExitEventArgs args)
+    {
+        float distance = hingePoint.position.z - (this.transform.position.z + halfZSize);
+        Debug.Log("hinge point: " + hingePoint.position + ", distance: " + distance+", box: " + transform.position.z + halfZSize);
+        if(distance < doorWindowOffset)
         {
-            //removes the constraint
-            this.transform.position = hingePoint.position;
+            rb.isKinematic = false;
+            grabInteractable.trackRotation = true;
+            grabInteractable.trackPosition = false;
             rb.constraints &= ~(RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY);
-            rb.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
-            grabInteractable.trackRotation = true;  //enables rotation for hinges
+            CreateHinge();
         }
-        /*else
-        {
-            rb.constraints |= RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
-            rb.constraints &= ~(RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ);
+    }
 
-            grabInteractable.trackRotation = false;  //disables rotation for hinges
-        }*/
+    //To get the user's controller's direction
+    public void OnGrab(SelectEnterEvent args)
+    {
+        ///currentInteractor = args.
+    }
 
-        //to ensure that the user cannot pull the door away from the hinge
-        if (this.transform.position.z == hingePoint.position.z)
+    /// <summary>
+    /// Destroys it from the gameobject
+    /// </summary>
+    void RemoveHinge()
+    {
+        HingeJoint hinge = GetComponent<HingeJoint>();
+        if(hinge != null)
         {
-            this.transform.position = hingePoint.position;
+            Destroy(GetComponent<HingeJoint>());
         }
+    }
 
-        //to avoid going backwards
-        if(this.transform.position.z <= zInitial)
+    /// <summary>
+    /// To ensure that the hinge is created just once
+    /// </summary>
+    void CreateHinge()
+    {
+        if (!TryGetComponent<HingeJoint>(out _))
         {
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, zInitial); 
+            HingeJoint hingeJoint = gameObject.AddComponent<HingeJoint>();
+            hingeJoint.connectedBody = connectedRB;
+            hingeJoint.anchor = new Vector3(0, 1f, 0);
+            hingeJoint.axis = Vector3.up;
+            hingeJoint.enableCollision = true;
+
+            JointLimits jointLimits = hingeJoint.limits;
+            jointLimits.min = hingeMin;
+            jointLimits.max = hingeMax;
+            hingeJoint.useLimits = true;
+            hingeJoint.extendedLimits = true;
+            hingeJoint.limits = jointLimits;
         }
     }
 }
