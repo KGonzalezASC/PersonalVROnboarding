@@ -392,6 +392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4846383790393216358}
   - component: {fileID: 6302370072332220301}
+  - component: {fileID: 8792340432584473946}
   m_Layer: 0
   m_Name: Left Arm IK
   m_TagString: Untagged
@@ -440,6 +441,23 @@ MonoBehaviour:
     m_HintWeight: 1
     m_MaintainTargetPositionOffset: 0
     m_MaintainTargetRotationOffset: 0
+--- !u!114 &8792340432584473946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7011866105249887821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714c8194dadd7634ea440b20c778d116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resizeAction: {fileID: 6281229486188515486, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  shoulder: {fileID: 1964122667537546702}
+  upperArm: {fileID: 5417952418326324372}
+  lowerArm: {fileID: 6247663509055683098}
+  controller: {fileID: 0}
 --- !u!1 &7076835095266124037
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +706,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2636330906625016165}
   - component: {fileID: 2954018322951404708}
+  - component: {fileID: 4598041553842605719}
   m_Layer: 0
   m_Name: Right Arm IK
   m_TagString: Untagged
@@ -736,6 +755,23 @@ MonoBehaviour:
     m_HintWeight: 1
     m_MaintainTargetPositionOffset: 0
     m_MaintainTargetRotationOffset: 0
+--- !u!114 &4598041553842605719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9219175756821140403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714c8194dadd7634ea440b20c778d116, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resizeAction: {fileID: 6281229486188515486, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  shoulder: {fileID: 8600032949634455097}
+  upperArm: {fileID: 4563056372631614500}
+  lowerArm: {fileID: 5366929885762779870}
+  controller: {fileID: 0}
 --- !u!1001 &8892007499937568608
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -746,15 +782,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 07bebafbbd8cb694abf8e1a9ad0630cb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.020907402
+      value: -1.5930185
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07bebafbbd8cb694abf8e1a9ad0630cb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00000023841858
+      value: -0.000000029802322
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07bebafbbd8cb694abf8e1a9ad0630cb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.6569053
+      value: -3.3009734
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07bebafbbd8cb694abf8e1a9ad0630cb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -803,7 +839,7 @@ PrefabInstance:
       addedObject: {fileID: 6950936449458643303}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 07bebafbbd8cb694abf8e1a9ad0630cb, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6531548919442363709}
+      addedObject: {fileID: 9064852213956103870}
     - targetCorrespondingSourceObject: {fileID: 5670878055021044771, guid: 07bebafbbd8cb694abf8e1a9ad0630cb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1705162187827387568}
@@ -1218,7 +1254,7 @@ MonoBehaviour:
     trackingRotationOffset: {x: 0, y: 0, z: 0}
   headBodyPositionOffset: {x: 0, y: -0.54, z: -0.07}
   headBodyYawOffset: 0
---- !u!114 &6531548919442363709
+--- !u!114 &9064852213956103870
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1227,21 +1263,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8622045160985750065}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 166567734f0ba624d846918d2c0c1146, type: 3}
+  m_Script: {fileID: 11500000, guid: b8c71053d8192334aad2cdc943916820, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   resizeAction: {fileID: 6281229486188515486, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  playerAvatar: {fileID: 8622045160985750065}
-  cameraHeight: {fileID: 0}
-  controller: {fileID: 0}
   characterController: {fileID: 0}
-  shoulder: {fileID: 1964122667537546702}
-  upperArm: {fileID: 5417952418326324372}
-  lowerArm: {fileID: 6247663509055683098}
-  hand: {fileID: 5125298965103528770}
-  middleFinger: {fileID: 1277499743560218947}
-  headUnit: 10
-  stretch: 1.2
+  defaultHeight: 1.78
 --- !u!4 &8626800029569631246 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8296108396991442066, guid: 07bebafbbd8cb694abf8e1a9ad0630cb, type: 3}

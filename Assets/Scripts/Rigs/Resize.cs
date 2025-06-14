@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-//Attach it on the controllers
 public class Resize : MonoBehaviour
 {
     public InputActionReference resizeAction;
@@ -11,17 +10,12 @@ public class Resize : MonoBehaviour
     [SerializeField] private Transform cameraHeight;        //player's eye level in the game
     [SerializeField] private Transform controller;
     [SerializeField] private CharacterController characterController;
-    [SerializeField] private Transform shoulder, upperArm, lowerArm, hand, middleFinger;
+    [SerializeField] private Transform shoulder, upperArm, lowerArm, hand;
 
     private float heightScale;
     private float defaultHeight = 1.78f;
     private float defaultArm = 0.71f;
     private float playerHeight = 1.0f;
-
-    float headUnit = 10.0f;          
-    const float upperArmRatio = 1.4f;
-    const float lowerArmRatio = 1.7f;
-    
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -52,33 +46,10 @@ public class Resize : MonoBehaviour
     //scales arms based on controller's distance
     void ResizeArms(InputAction.CallbackContext ctx)
     {
-        float actualArmLength = Vector3.Distance(shoulder.position, controller.position);
-        float modelLength = Vector3.Distance(shoulder.position, middleFinger.position);
+        //Uses similar logic to height
+        float playerArmsDistance = Vector3.Distance(controller.position, shoulder.position);
+        float armScale = playerArmsDistance / defaultArm;
 
-        headUnit = actualArmLength / (upperArmRatio + lowerArmRatio);
-
-        //target lengths - based on player
-        float targetUpper = headUnit * upperArmRatio;
-        float targetLower = headUnit * lowerArmRatio;
-
-        //get the model lengths- using the distance to get accurate information
-        float modelUpper = modelLength * upperArmRatio;
-        float modelLower = modelLength * lowerArmRatio;
-
-        //scale factors to make sure it resizes properly
-        float upperScale = targetUpper/modelUpper;
-        float lowerScale = targetLower/modelLower;
-
-        //upperArm.localScale = new Vector3(1, upperScale, 1);
-        //lowerArm.localScale = new Vector3(1, lowerScale, 1);
-
-        Debug.Log("actual arm distance: "+ actualArmLength  +
-            ", model arm: " + modelLength+
-            ", upper arm scale: " + upperArm.localScale +
-            ", lower arm scale: " + lowerArm.localScale +
-            ", head unit: " + headUnit);
-        Debug.Log("Model upper length: " + modelUpper + ", Target upper length: " + targetUpper);
-        Debug.Log("Upper scale: " + upperScale);
-
+        shoulder.localScale = upperArm.localScale = lowerArm.localScale = Vector3.one * armScale;
     }
 }
