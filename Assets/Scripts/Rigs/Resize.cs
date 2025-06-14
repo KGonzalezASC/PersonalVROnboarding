@@ -5,20 +5,20 @@ using UnityEngine.InputSystem;
 public class Resize : MonoBehaviour
 {
     public InputActionReference resizeAction;
+    HeightMarshal heightMarshal;
 
-    [SerializeField] private GameObject playerAvatar;
+    [SerializeField] private GameObject XRInteractionManager;
     [SerializeField] private Transform cameraHeight;        //player's eye level in the game
     [SerializeField] private Transform controller;
-    
+    [SerializeField] private CharacterController characterController;
     [SerializeField] private Transform shoulder, upperArm, lowerArm, hand, middleFinger;
 
     private float heightScale;
-    private float defaultHeight = 1.83f;
+    private float defaultHeight = 1.78f;
+    private float defaultArm = 0.71f;
+    private float playerHeight = 1.0f;
 
-    private float defaultArm = 0.584f;      //model's arm length
-    public float headUnit = 10.0f;          //average head unit
-    public float stretch = 1.2f;
-
+    float headUnit = 10.0f;          
     const float upperArmRatio = 1.4f;
     const float lowerArmRatio = 1.7f;
     
@@ -26,23 +26,27 @@ public class Resize : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        heightMarshal = XRInteractionManager.GetComponent<HeightMarshal>();
+        //playerHeight = heightMarshal.Height;        //to get the accurate height
         resizeAction.action.Enable();
-        //resizeAction.action.performed += OnResize;
+        resizeAction.action.performed += OnResize;
         resizeAction.action.performed += ResizeArms;
     }
 
     private void OnDestroy()
     {
         resizeAction.action.Disable();
-        //resizeAction.action.performed -= OnResize;
+        resizeAction.action.performed -= OnResize;
         resizeAction.action.performed -= ResizeArms;
     }
     
     //Resizes the avatar based on the height of the character controller
     void OnResize(InputAction.CallbackContext ctx)
     {
-        heightScale = cameraHeight.position.y/ defaultHeight;
-        playerAvatar.transform.localScale = new Vector3(heightScale, heightScale, heightScale);;
+        heightScale = characterController.height / defaultHeight;
+        this.transform.localScale = Vector3.one * heightScale;
+       // playerHeight = heightMarshal.Height;
+        Debug.LogWarning("Player height (CAM): " + cameraHeight.position+" , character controller's height: "+ characterController.height+", height marshall: "+ playerHeight);
     }
     
     //scales arms based on controller's distance
@@ -76,47 +80,5 @@ public class Resize : MonoBehaviour
         Debug.Log("Model upper length: " + modelUpper + ", Target upper length: " + targetUpper);
         Debug.Log("Upper scale: " + upperScale);
 
-    }
-
-    void AdjustArmLength(InputAction.CallbackContext ctx)
-    {
-        float totalArmLength = Vector3.Distance(shoulder.position, controller.position);
-        float upperRatio = 0.45f;
-        float lowerRatio = 0.55f;
-
-        float upperLength = totalArmLength * upperRatio;
-        float lowerLength = totalArmLength * lowerRatio;
-
-        Debug.Log("Bones before: upper arm: " + upperArm.localPosition+
-            ", lower arm: "+ lowerArm.localPosition+
-            ", hand: "+ hand.localPosition);
-
-        // Adjust lowerArm position relative to upperArm
-        Vector3 dirUpper = (lowerArm.position - upperArm.position).normalized;
-        lowerArm.position = upperArm.position + dirUpper * upperLength;
-
-        // Adjust hand position relative to lowerArm
-        Vector3 dirLower = (hand.position - lowerArm.position).normalized;
-        hand.position = lowerArm.position + dirLower * lowerLength;
-
-        Debug.Log("Bones after: upper arm: " + upperArm.localPosition +
-          ", lower arm: " + lowerArm.localPosition +
-          ", hand: " + hand.localPosition);
-    }
-
-    void ApplyStretch(InputAction.CallbackContext ctx)
-    {
-        // Calculate the current distance between the hand and the controller
-        float currentDistance = Vector3.Distance(hand.position, controller.position);
-
-        // Calculate the desired distance based on the default arm length and the stretch factor
-        float desiredDistance = defaultArm * stretch;
-
-        // Calculate the stretch ratio
-        float stretchRatio = currentDistance / desiredDistance;
-
-        // Adjust the positions of the arm bones to simulate stretching
-        upperArm.position = Vector3.Lerp(shoulder.position, hand.position, 1 - stretchRatio);
-        lowerArm.position = Vector3.Lerp(upperArm.position, hand.position, 1 - stretchRatio);
     }
 }

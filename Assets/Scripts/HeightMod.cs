@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -30,6 +31,12 @@ public class HeightMarshal : MonoBehaviour
     private readonly List<XRInputSubsystem> _subsystems = new();
 
     #endregion
+
+    //Adding a height accessible property to ensure that the avatar is scaled properly
+    /*public float Height
+    {
+        get { return lastAdjustedHeight.y; }
+    }*/
 
     private void Awake()
     {
